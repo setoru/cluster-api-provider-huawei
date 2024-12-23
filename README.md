@@ -1,1 +1,1 @@
-# ClusterAPI-for-Huawei
+# cluster-api-provider-Huawei
