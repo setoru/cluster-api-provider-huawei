@@ -1,0 +1,23 @@
+# permissions for end users to view huaweicloudmachines.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: cluster-api-provider-huawei
+    app.kubernetes.io/managed-by: kustomize
+  name: huaweicloudmachine-viewer-role
+rules:
+- apiGroups:
+  - infrastructure.cluster.x-k8s.io
+  resources:
+  - huaweicloudmachines
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - infrastructure.cluster.x-k8s.io
+  resources:
+  - huaweicloudmachines/status
+  verbs:
+  - get
