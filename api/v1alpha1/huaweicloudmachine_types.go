@@ -25,7 +25,7 @@ import (
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
 // HuaweiCloudMachineSpec defines the desired state of HuaweiCloudMachine.
-// Most attributes are referred to https://github.com/huaweicloud/huaweicloud-sdk-go-v3/blob/49495894f5f7422270165ace4ed2fc965f781ca9/services/iec/v1/model/model_resource.go#L10
+// Most attributes are referred to https://github.com/huaweicloud/huaweicloud-sdk-go-v3/blob/master/services/ecs/v2/model/model_nova_create_servers_option.go
 type HuaweiCloudMachineSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
