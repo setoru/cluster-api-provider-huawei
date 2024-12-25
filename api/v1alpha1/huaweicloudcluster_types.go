@@ -68,5 +68,5 @@ type HuaweiCloudClusterList struct {
 }
 
 func init() {
-	SchemeBuilder.Register(&HuaweiCloudCluster{}, &HuaweiCloudClusterList{})
+	objectTypes = append(objectTypes, &HuaweiCloudCluster{}, &HuaweiCloudClusterList{})
 }
