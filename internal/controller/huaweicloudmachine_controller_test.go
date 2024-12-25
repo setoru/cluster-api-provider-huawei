@@ -51,7 +51,13 @@ var _ = Describe("HuaweiCloudMachine Controller", func() {
 						Name:      resourceName,
 						Namespace: "default",
 					},
-					// TODO(user): Specify other spec details if needed.
+					Spec: infrastructurev1alpha1.HuaweiCloudMachineSpec{
+						// TODO(user): Specify other spec details if needed.
+						ProviderID: nil,
+						InstanceID: nil,
+						ImageRef:   nil,
+						FlavorRef:  "s2.small.1",
+					},
 				}
 				Expect(k8sClient.Create(ctx, resource)).To(Succeed())
 			}
