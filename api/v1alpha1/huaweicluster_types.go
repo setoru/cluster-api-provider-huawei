@@ -18,6 +18,8 @@ package v1alpha1
 
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	clusterv1 "sigs.k8s.io/cluster-api/api/v1beta1"
+	capierrors "sigs.k8s.io/cluster-api/errors"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -25,17 +27,38 @@ import (
 
 // HuaweiClusterSpec defines the desired state of HuaweiCluster.
 type HuaweiClusterSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	// The ECS Region the cluster lives in.
+	Region string `json:"region,omitempty"`
 
-	// Foo is an example field of HuaweiCluster. Edit huaweicluster_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+	// +optional
+	ControlPlaneEndpoint clusterv1.APIEndpoint `json:"controlPlaneEndpoint"`
 }
 
 // HuaweiClusterStatus defines the observed state of HuaweiCluster.
 type HuaweiClusterStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	// Ready describes if the Huawei Cluster can be considered ready for machine creation.
+	// +optional
+	Ready bool `json:"ready,omitempty"`
+	// Conditions defines current service state of the Huawei cluster.
+	// +optional
+	Conditions clusterv1.Conditions `json:"conditions,omitempty"`
+
+	// failureReason will be set in the event that there is a terminal problem reconciling the Cluster
+	// and will contain a succinct value suitable for machine interpretation.
+	//
+	// This field should not be set for transitive errors that can be fixed automatically or with manual intervention,
+	// but instead indicate that something is fundamentally wrong with the FooCluster and that it cannot be recovered.
+	// +optional
+	FailureReason *capierrors.ClusterStatusError `json:"failureReason,omitempty"`
+
+	// failureMessage will be set in the event that there is a terminal problem reconciling the Cluster
+	// and will contain a more verbose string suitable for logging and human consumption.
+	//
+	// This field should not be set for transitive errors that can be fixed automatically or with manual intervention,
+	// but instead indicate that something is fundamentally wrong with the FooCluster and that it cannot be recovered.
+	// +optional
+	FailureMessage *string `json:"failureMessage,omitempty"`
 }
 
 // +kubebuilder:object:root=true
