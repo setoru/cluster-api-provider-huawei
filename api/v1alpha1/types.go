@@ -17,8 +17,8 @@ limitations under the License.
 package v1alpha1
 
 type HuaweiElbMembers struct {
-	ID   string `name:"id"`
-	Port int32  `name:"port"`
+	ID   string `json:"id"`
+	Port int32  `json:"port"`
 }
 
 // RootVolumeProperties contains the information regarding the system disk including performance, size, name, and category
@@ -31,7 +31,7 @@ type RootVolumeProperties struct {
 
 	Throughput int32 `json:"throughput,omitempty"`
 
-	SnapshotID string `name:"snapshotId,omitempty"`
+	SnapshotID string `json:"snapshotId,omitempty"`
 }
 
 type Charging struct {

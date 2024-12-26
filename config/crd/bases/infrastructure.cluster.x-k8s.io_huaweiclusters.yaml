@@ -39,13 +39,94 @@ spec:
           spec:
             description: HuaweiClusterSpec defines the desired state of HuaweiCluster.
             properties:
-              foo:
-                description: Foo is an example field of HuaweiCluster. Edit huaweicluster_types.go
-                  to remove/update
+              controlPlaneEndpoint:
+                description: ControlPlaneEndpoint represents the endpoint used to
+                  communicate with the control plane.
+                properties:
+                  host:
+                    description: The hostname on which the API server is serving.
+                    type: string
+                  port:
+                    description: The port on which the API server is serving.
+                    format: int32
+                    type: integer
+                required:
+                - host
+                - port
+                type: object
+              region:
+                description: The ECS Region the cluster lives in.
                 type: string
             type: object
           status:
             description: HuaweiClusterStatus defines the observed state of HuaweiCluster.
+            properties:
+              conditions:
+                description: Conditions defines current service state of the Huawei
+                  cluster.
+                items:
+                  description: Condition defines an observation of a Cluster API resource
+                    operational state.
+                  properties:
+                    lastTransitionTime:
+                      description: |-
+                        Last time the condition transitioned from one status to another.
+                        This should be when the underlying condition changed. If that is not known, then using the time when
+                        the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: |-
+                        A human readable message indicating details about the transition.
+                        This field may be empty.
+                      type: string
+                    reason:
+                      description: |-
+                        The reason for the condition's last transition in CamelCase.
+                        The specific API may choose whether or not this field is considered a guaranteed API.
+                        This field may be empty.
+                      type: string
+                    severity:
+                      description: |-
+                        severity provides an explicit classification of Reason code, so the users or machines can immediately
+                        understand the current situation and act accordingly.
+                        The Severity field MUST be set only when Status=False.
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      type: string
+                    type:
+                      description: |-
+                        type of condition in CamelCase or in foo.example.com/CamelCase.
+                        Many .condition.type values are consistent across resources like Available, but because arbitrary conditions
+                        can be useful (see .node.status.conditions), the ability to deconflict is important.
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - status
+                  - type
+                  type: object
+                type: array
+              failureMessage:
+                description: |-
+                  failureMessage will be set in the event that there is a terminal problem reconciling the Cluster
+                  and will contain a more verbose string suitable for logging and human consumption.
+
+                  This field should not be set for transitive errors that can be fixed automatically or with manual intervention,
+                  but instead indicate that something is fundamentally wrong with the FooCluster and that it cannot be recovered.
+                type: string
+              failureReason:
+                description: |-
+                  failureReason will be set in the event that there is a terminal problem reconciling the Cluster
+                  and will contain a succinct value suitable for machine interpretation.
+
+                  This field should not be set for transitive errors that can be fixed automatically or with manual intervention,
+                  but instead indicate that something is fundamentally wrong with the FooCluster and that it cannot be recovered.
+                type: string
+              ready:
+                description: Ready describes if the Huawei Cluster can be considered
+                  ready for machine creation.
+                type: boolean
             type: object
         type: object
     served: true

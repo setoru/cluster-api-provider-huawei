@@ -39,13 +39,233 @@ spec:
           spec:
             description: HuaweiMachineSpec defines the desired state of HuaweiMachine.
             properties:
-              foo:
-                description: Foo is an example field of HuaweiMachine. Edit huaweimachine_types.go
-                  to remove/update
+              availabilityZone:
                 type: string
+              batchCreateInMultiAz:
+                type: boolean
+              charging:
+                properties:
+                  chargingMode:
+                    type: string
+                  enterpriseProjectId:
+                    type: string
+                  isAutoPay:
+                    type: boolean
+                  isAutoRenew:
+                    type: boolean
+                  periodNum:
+                    format: int32
+                    type: integer
+                  periodType:
+                    type: string
+                type: object
+              dataVolumes:
+                description: DataVolumes holds information regarding the extra disks
+                  attached to the instance
+                items:
+                  description: DataVolumeProperties contains the information regarding
+                    the datadisk attached to an instance
+                  properties:
+                    clusterId:
+                      type: string
+                    clusterType:
+                      type: string
+                    dataImageId:
+                      type: string
+                    iops:
+                      format: int32
+                      type: integer
+                    multiattach:
+                      type: boolean
+                    passthrough:
+                      type: boolean
+                    size:
+                      format: int32
+                      type: integer
+                    snapshotId:
+                      type: string
+                    throughput:
+                      format: int32
+                      type: integer
+                    volumeType:
+                      type: string
+                  type: object
+                type: array
+              elbMembers:
+                items:
+                  properties:
+                    id:
+                      type: string
+                    port:
+                      format: int32
+                      type: integer
+                  required:
+                  - id
+                  - port
+                  type: object
+                type: array
+              flavor:
+                description: The flavor of the instance.
+                type: string
+              imageId:
+                description: The ID of the image used to create the instance.
+                type: string
+              providerID:
+                description: ProviderID is the unique identifier as specified by the
+                  cloud provider.
+                type: string
+              publicIp:
+                description: PublicIP specifies whether the instance should get a
+                  public IP.
+                type: boolean
+              regionId:
+                description: The ID of the region in which to create the instance.
+                  You can call the DescribeRegions operation to query the most recent
+                  region list.
+                type: string
+              rootVolume:
+                description: RootVolume holds the properties regarding the system
+                  disk for the instance
+                properties:
+                  iops:
+                    format: int32
+                    type: integer
+                  size:
+                    format: int32
+                    type: integer
+                  snapshotId:
+                    type: string
+                  throughput:
+                    format: int32
+                    type: integer
+                  volumeType:
+                    type: string
+                type: object
+              securityGroups:
+                items:
+                  properties:
+                    id:
+                      description: ID of resource
+                      type: string
+                  type: object
+                type: array
+              serverSchedulerHints:
+                properties:
+                  dedicatedHostId:
+                    type: string
+                  group:
+                    type: string
+                  tenancy:
+                    type: string
+                type: object
+              subnetId:
+                description: The ID of the subnet
+                type: string
+              subnetIpv4Id:
+                type: string
+              vpcId:
+                description: The ID of the vpc
+                type: string
+              zoneId:
+                description: The ID of the zone in which to create the instance. You
+                  can call the DescribeZones operation to query the most recent region
+                  list.
+                type: string
+            required:
+            - flavor
+            - imageId
+            - regionId
+            - subnetId
+            - subnetIpv4Id
+            - vpcId
+            - zoneId
             type: object
           status:
             description: HuaweiMachineStatus defines the observed state of HuaweiMachine.
+            properties:
+              addresses:
+                description: Addresses contains the Huawei instance associated addresses.
+                items:
+                  description: MachineAddress contains information for the node's
+                    address.
+                  properties:
+                    address:
+                      description: The machine address.
+                      type: string
+                    type:
+                      description: Machine address type, one of Hostname, ExternalIP,
+                        InternalIP, ExternalDNS or InternalDNS.
+                      type: string
+                  required:
+                  - address
+                  - type
+                  type: object
+                type: array
+              conditions:
+                description: Conditions defines current service state of the Huawei
+                  cluster.
+                items:
+                  description: Condition defines an observation of a Cluster API resource
+                    operational state.
+                  properties:
+                    lastTransitionTime:
+                      description: |-
+                        Last time the condition transitioned from one status to another.
+                        This should be when the underlying condition changed. If that is not known, then using the time when
+                        the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: |-
+                        A human readable message indicating details about the transition.
+                        This field may be empty.
+                      type: string
+                    reason:
+                      description: |-
+                        The reason for the condition's last transition in CamelCase.
+                        The specific API may choose whether or not this field is considered a guaranteed API.
+                        This field may be empty.
+                      type: string
+                    severity:
+                      description: |-
+                        severity provides an explicit classification of Reason code, so the users or machines can immediately
+                        understand the current situation and act accordingly.
+                        The Severity field MUST be set only when Status=False.
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      type: string
+                    type:
+                      description: |-
+                        type of condition in CamelCase or in foo.example.com/CamelCase.
+                        Many .condition.type values are consistent across resources like Available, but because arbitrary conditions
+                        can be useful (see .node.status.conditions), the ability to deconflict is important.
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - status
+                  - type
+                  type: object
+                type: array
+              failureMessage:
+                description: |-
+                  failureMessage will be set in the event that there is a terminal problem reconciling the FooMachine
+                  and will contain a more verbose string suitable for logging and human consumption.
+
+                  This field should not be set for transitive errors that can be fixed automatically or with manual intervention,
+                  but instead indicate that something is fundamentally wrong with the FooMachine and that it cannot be recovered.
+                type: string
+              failureReason:
+                description: |-
+                  failureReason will be set in the event that there is a terminal problem reconciling the Machine
+                  and will contain a succinct value suitable for machine interpretation.
+
+                  This field should not be set for transitive errors that can be fixed automatically or with manual intervention,
+                  but instead indicate that something is fundamentally wrong with the FooMachine and that it cannot be recovered.
+                type: string
+              ready:
+                description: Ready is true when the provider resource is ready.
+                type: boolean
             type: object
         type: object
     served: true
