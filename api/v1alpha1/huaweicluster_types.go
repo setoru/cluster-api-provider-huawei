@@ -17,6 +17,7 @@ limitations under the License.
 package v1alpha1
 
 import (
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	clusterv1 "sigs.k8s.io/cluster-api/api/v1beta1"
 	capierrors "sigs.k8s.io/cluster-api/errors"
@@ -29,6 +30,11 @@ import (
 type HuaweiClusterSpec struct {
 	// The ECS Region the cluster lives in.
 	Region string `json:"region,omitempty"`
+
+	// credentialsSecret is a local reference to a secret that contains the
+	// credentials data to access HuaweiCloud PC client
+	// +kubebuilder:validation:Required
+	CredentialsSecret *corev1.LocalObjectReference `json:"credentialsSecret"`
 
 	// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
 	// +optional
