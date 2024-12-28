@@ -17,6 +17,7 @@ limitations under the License.
 package v1alpha1
 
 type HuaweiLoadBalancerSpec struct {
+	ID       string `json:"id"`
 	Name     string `json:"name"`
 	SubnetId string `json:"subnetId"`
 }

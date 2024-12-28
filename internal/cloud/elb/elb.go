@@ -35,5 +35,18 @@ func CreateLoadBalancer(clusterScope *scope.ClusterScope) (loadbalancerId string
 	if err != nil {
 		return "", "", errors.Wrap(err, "failed to create load balancer")
 	}
+	clusterScope.HuaweiCluster.Spec.LoadBalancerSpec.ID = loadbalancerId
 	return loadbalancerId, publicIp, nil
+}
+
+func DeleteLoadBalancer(clusterScope *scope.ClusterScope) error {
+	client := clusterScope.HuaweiClient
+	if clusterScope.HuaweiCluster.Spec.LoadBalancerSpec == nil {
+		clusterScope.Logger.Info("no load balancer")
+		return nil
+	}
+	loadbalancerId := clusterScope.HuaweiCluster.Spec.LoadBalancerSpec.ID
+	req := &model.DeleteLoadBalancerRequest{LoadbalancerId: loadbalancerId}
+	_, err := client.DeleteLoadBalancer(req)
+	return errors.Wrap(err, "failed to delete load balancer")
 }

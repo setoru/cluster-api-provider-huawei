@@ -39,7 +39,7 @@ type HuaweiClusterSpec struct {
 
 	// LoadBalancerSpec is optional configuration for customizing control plane behavior
 	// +optional
-	LoadBalancerSpec HuaweiLoadBalancerSpec `json:"huaweiLoadBalancerSpec,omitempty"`
+	LoadBalancerSpec *HuaweiLoadBalancerSpec `json:"huaweiLoadBalancerSpec,omitempty"`
 
 	// credentialsSecret is a local reference to a secret that contains the
 	// credentials data to access HuaweiCloud PC client

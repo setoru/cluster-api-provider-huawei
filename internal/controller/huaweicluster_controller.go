@@ -150,6 +150,15 @@ func (r *HuaweiClusterReconciler) reconcileNormal(ctx context.Context, clusterSc
 }
 
 func (r *HuaweiClusterReconciler) reconcileDelete(ctx context.Context, clusterScope *scope.ClusterScope) (ctrl.Result, error) {
+	logger := log.FromContext(ctx)
+	logger.Info("Reconciling HuaweiCluster deletion")
+
+	err := elb.DeleteLoadBalancer(clusterScope)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+	// Cluster is deleted so remove the finalizer.
+	controllerutil.RemoveFinalizer(clusterScope.HuaweiCluster, infrav1.ClusterFinalizer)
 	return ctrl.Result{}, nil
 }
 
