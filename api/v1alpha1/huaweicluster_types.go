@@ -23,6 +23,12 @@ import (
 	capierrors "sigs.k8s.io/cluster-api/errors"
 )
 
+const (
+	// ClusterFinalizer allows cleaning up resources associated with
+	// HuaweiCluster before removing it from the apiserver.
+	ClusterFinalizer = "huaweicluster.infrastructure.cluster.x-k8s.io"
+)
+
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
@@ -30,6 +36,10 @@ import (
 type HuaweiClusterSpec struct {
 	// The ECS Region the cluster lives in.
 	Region string `json:"region,omitempty"`
+
+	// LoadBalancerSpec is optional configuration for customizing control plane behavior
+	// +optional
+	LoadBalancerSpec HuaweiLoadBalancerSpec `json:"huaweiLoadBalancerSpec,omitempty"`
 
 	// credentialsSecret is a local reference to a secret that contains the
 	// credentials data to access HuaweiCloud PC client

@@ -21,15 +21,18 @@ import (
 
 	"github.com/pkg/errors"
 	hwclient "github.com/setoru/cluster-api-provider-huawei/internal/cloud/client"
+	"github.com/setoru/cluster-api-provider-huawei/internal/cloud/elb"
 	"github.com/setoru/cluster-api-provider-huawei/internal/cloud/scope"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/klog/v2"
+	clusterv1 "sigs.k8s.io/cluster-api/api/v1beta1"
 	"sigs.k8s.io/cluster-api/util"
 	"sigs.k8s.io/cluster-api/util/annotations"
 	"sigs.k8s.io/cluster-api/util/patch"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
@@ -127,6 +130,22 @@ func (r *HuaweiClusterReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 }
 
 func (r *HuaweiClusterReconciler) reconcileNormal(ctx context.Context, clusterScope *scope.ClusterScope) (ctrl.Result, error) {
+	logger := log.FromContext(ctx)
+	logger.Info("Reconciling HuaweiCluster")
+
+	if !controllerutil.ContainsFinalizer(clusterScope.HuaweiCluster, infrav1.ClusterFinalizer) {
+		controllerutil.AddFinalizer(clusterScope.HuaweiCluster, infrav1.ClusterFinalizer)
+		return ctrl.Result{Requeue: true}, nil
+	}
+	_, ip, err := elb.CreateLoadBalancer(clusterScope)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+	clusterScope.HuaweiCluster.Spec.ControlPlaneEndpoint = clusterv1.APIEndpoint{
+		Host: ip,
+		Port: 6443,
+	}
+	clusterScope.HuaweiCluster.Status.Ready = true
 	return ctrl.Result{}, nil
 }
 
