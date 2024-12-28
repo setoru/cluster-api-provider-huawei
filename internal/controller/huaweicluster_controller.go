@@ -20,6 +20,7 @@ import (
 	"context"
 
 	"github.com/pkg/errors"
+	infrav1 "github.com/setoru/cluster-api-provider-huawei/api/v1alpha1"
 	hwclient "github.com/setoru/cluster-api-provider-huawei/internal/cloud/client"
 	"github.com/setoru/cluster-api-provider-huawei/internal/cloud/elb"
 	"github.com/setoru/cluster-api-provider-huawei/internal/cloud/scope"
@@ -30,13 +31,14 @@ import (
 	"sigs.k8s.io/cluster-api/util"
 	"sigs.k8s.io/cluster-api/util/annotations"
 	"sigs.k8s.io/cluster-api/util/patch"
+	"sigs.k8s.io/cluster-api/util/predicates"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
+	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
-
-	infrav1 "github.com/setoru/cluster-api-provider-huawei/api/v1alpha1"
+	"sigs.k8s.io/controller-runtime/pkg/source"
 )
 
 // HuaweiClusterReconciler reconciles a HuaweiCluster object
@@ -163,9 +165,17 @@ func (r *HuaweiClusterReconciler) reconcileDelete(ctx context.Context, clusterSc
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *HuaweiClusterReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	return ctrl.NewControllerManagedBy(mgr).
+func (r *HuaweiClusterReconciler) SetupWithManager(ctx context.Context, mgr ctrl.Manager) error {
+	c, err := ctrl.NewControllerManagedBy(mgr).
 		For(&infrav1.HuaweiCluster{}).
-		Named("huaweicluster").
-		Complete(r)
+		WithEventFilter(predicates.ResourceNotPaused(mgr.GetScheme(), ctrl.LoggerFrom(ctx))).
+		Build(r)
+	if err != nil {
+		errors.Wrap(err, "error creating controller")
+	}
+	return c.Watch(
+		source.Kind[client.Object](mgr.GetCache(), &clusterv1.Cluster{},
+			handler.EnqueueRequestsFromMapFunc(util.ClusterToInfrastructureMapFunc(ctx, infrav1.GroupVersion.WithKind("HuaweiCluster"), mgr.GetClient(), &infrav1.HuaweiCluster{})),
+			predicates.ClusterUnpaused(mgr.GetScheme(), ctrl.LoggerFrom(ctx)),
+		))
 }

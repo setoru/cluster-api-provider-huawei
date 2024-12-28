@@ -24,6 +24,7 @@ import (
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
+	clusterv1 "sigs.k8s.io/cluster-api/api/v1beta1"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
@@ -50,6 +51,7 @@ func init() {
 
 	utilruntime.Must(infrastructurev1alpha1.AddToScheme(scheme))
 	// +kubebuilder:scaffold:scheme
+	utilruntime.Must(clusterv1.AddToScheme(scheme))
 }
 
 func main() {
@@ -141,11 +143,11 @@ func main() {
 		setupLog.Error(err, "unable to start manager")
 		os.Exit(1)
 	}
-
+	ctx := ctrl.SetupSignalHandler()
 	if err = (&controller.HuaweiClusterReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
+	}).SetupWithManager(ctx, mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "HuaweiCluster")
 		os.Exit(1)
 	}
@@ -168,7 +170,7 @@ func main() {
 	}
 
 	setupLog.Info("starting manager")
-	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {
+	if err := mgr.Start(ctx); err != nil {
 		setupLog.Error(err, "problem running manager")
 		os.Exit(1)
 	}
