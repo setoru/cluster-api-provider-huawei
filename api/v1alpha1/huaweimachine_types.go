@@ -22,6 +22,12 @@ import (
 	capierrors "sigs.k8s.io/cluster-api/errors"
 )
 
+const (
+	// MachineFinalizer allows cleaning up resources associated with
+	// DockerMachine before removing it from the API Server.
+	MachineFinalizer = "huaweimachine.infrastructure.cluster.x-k8s.io"
+)
+
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
@@ -116,6 +122,16 @@ type HuaweiMachine struct {
 
 	Spec   HuaweiMachineSpec   `json:"spec,omitempty"`
 	Status HuaweiMachineStatus `json:"status,omitempty"`
+}
+
+// GetConditions returns the observations of the operational state of the HuaweiMachine resource.
+func (h *HuaweiMachine) GetConditions() clusterv1.Conditions {
+	return h.Status.Conditions
+}
+
+// SetConditions sets the underlying service state of the HuaweiMachine to the predescribed clusterv1.Conditions.
+func (h *HuaweiMachine) SetConditions(conditions clusterv1.Conditions) {
+	h.Status.Conditions = conditions
 }
 
 // +kubebuilder:object:root=true

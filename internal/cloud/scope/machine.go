@@ -24,10 +24,11 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-type ClusterScope struct {
+type MachineScope struct {
 	Logger        logr.Logger
 	Client        client.Client
 	Cluster       *clusterv1.Cluster
-	HuaweiCluster *infrav1.HuaweiCluster
+	Machine       *clusterv1.Machine
+	HuaweiMachine *infrav1.HuaweiMachine
 	HuaweiClient  hwclient.Client
 }
