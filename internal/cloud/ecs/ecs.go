@@ -383,3 +383,21 @@ func WaitForResult(name string, predicate func() (bool, interface{}, error), ret
 		}
 	}
 }
+
+func DeleteInstance(machineScope *scope.MachineScope, instanceID string) error {
+	client := machineScope.HuaweiClient
+	request := ecsMdl.DeleteServersRequest{Body: &ecsMdl.DeleteServersRequestBody{}}
+	ids := make([]ecsMdl.ServerId, 0)
+	ids = append(ids, ecsMdl.ServerId{Id: instanceID})
+	deletePublicip := true
+	deleteVolume := true
+	request.Body.Servers = ids
+	request.Body.DeletePublicip = &deletePublicip
+	request.Body.DeleteVolume = &deleteVolume
+	response, err := client.DeleteServers(&request)
+	if err != nil {
+		klog.Errorf("failed to delete instances %v error %v", response, err)
+		return fmt.Errorf("failed to delete instaces: %v", err)
+	}
+	return nil
+}

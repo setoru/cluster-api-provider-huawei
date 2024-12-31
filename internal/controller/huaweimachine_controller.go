@@ -203,6 +203,7 @@ func (r *HuaweiMachineReconciler) reconcileNormal(ctx context.Context, machineSc
 	}
 	providerId := instance.Id
 	machineScope.HuaweiMachine.Spec.ProviderID = &providerId
+	machineScope.HuaweiMachine.Status.Ready = true
 	return ctrl.Result{}, nil
 }
 
@@ -234,6 +235,20 @@ func extractNodeAddressesFromInstance(instance *ecsMdl.ServerDetail) ([]clusterv
 }
 
 func (r *HuaweiMachineReconciler) reconcileDelete(ctx context.Context, machineScope *scope.MachineScope) (_ ctrl.Result, retErr error) {
+	logger := log.FromContext(ctx)
+	logger.Info("Reconciling HuaweiMachine deletion")
+
+	instance, err := ecs.GetExistingInstance(machineScope)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+	if instance != nil {
+		if err := ecs.DeleteInstance(machineScope, instance.Id); err != nil {
+			return ctrl.Result{}, errors.Wrapf(err, "failed to delete Huawei Machine")
+		}
+	}
+	// Machine is deleted so remove the finalizer.
+	controllerutil.RemoveFinalizer(machineScope.HuaweiMachine, infrav1.MachineFinalizer)
 	return ctrl.Result{}, nil
 }
 
