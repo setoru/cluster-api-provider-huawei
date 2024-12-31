@@ -54,9 +54,42 @@ spec:
                 - host
                 - port
                 type: object
+              credentialsSecret:
+                description: |-
+                  credentialsSecret is a local reference to a secret that contains the
+                  credentials data to access HuaweiCloud PC client
+                properties:
+                  name:
+                    default: ""
+                    description: |-
+                      Name of the referent.
+                      This field is effectively required, but due to backwards compatibility is
+                      allowed to be empty. Instances of this type with an empty value here are
+                      almost certainly wrong.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                    type: string
+                type: object
+                x-kubernetes-map-type: atomic
+              huaweiLoadBalancerSpec:
+                description: LoadBalancerSpec is optional configuration for customizing
+                  control plane behavior
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  subnetId:
+                    type: string
+                required:
+                - id
+                - name
+                - subnetId
+                type: object
               region:
                 description: The ECS Region the cluster lives in.
                 type: string
+            required:
+            - credentialsSecret
             type: object
           status:
             description: HuaweiClusterStatus defines the observed state of HuaweiCluster.
