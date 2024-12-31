@@ -1,0 +1,17 @@
+[
+    {
+      "name": "huawei",
+      "config": {
+        "image": "ghcr.io/capi-samples/cluster-api-provider-huawei:dev",
+        "live_reload_deps": [
+          "main.go",
+          "go.mod",
+          "go.sum",
+          "api",
+          "controllers",
+          "pkg"
+        ],
+        "label": "CAPH"
+      }
+    }
+]
