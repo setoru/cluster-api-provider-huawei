@@ -17,6 +17,7 @@ limitations under the License.
 package ecs
 
 import (
+	"encoding/base64"
 	"fmt"
 	"time"
 
@@ -24,6 +25,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/setoru/cluster-api-provider-huawei/internal/cloud/scope"
 	"k8s.io/klog/v2"
+	"k8s.io/utils/ptr"
 )
 
 const (
@@ -71,9 +73,12 @@ func CreateInstance(machineScope *scope.MachineScope) (*ecsMdl.ServerDetail, err
 
 	request.Body.Server.Name = machineScope.HuaweiMachine.GetName()
 
-	userData := ""
-	if userData != "" {
-		request.Body.Server.UserData = &userData
+	userData, _, err := machineScope.GetRawBootstrapDataWithFormat()
+	if err != nil {
+		return nil, err
+	}
+	if userData != nil {
+		request.Body.Server.UserData = ptr.To[string](base64.StdEncoding.EncodeToString(userData))
 	}
 
 	request.Body.Server.RootVolume = getRootVolumeProperties(machineScope)
