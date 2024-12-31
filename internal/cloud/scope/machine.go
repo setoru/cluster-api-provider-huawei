@@ -32,3 +32,11 @@ type MachineScope struct {
 	HuaweiMachine *infrav1.HuaweiMachine
 	HuaweiClient  hwclient.Client
 }
+
+// GetProviderID returns the HuaweiMachine providerID from the spec.
+func (m *MachineScope) GetProviderID() string {
+	if m.HuaweiMachine.Spec.ProviderID != nil {
+		return *m.HuaweiMachine.Spec.ProviderID
+	}
+	return ""
+}

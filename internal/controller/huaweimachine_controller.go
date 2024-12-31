@@ -19,13 +19,17 @@ package controller
 import (
 	"context"
 	"fmt"
+	"net"
 
+	ecsMdl "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ecs/v2/model"
 	"github.com/pkg/errors"
 	infrav1 "github.com/setoru/cluster-api-provider-huawei/api/v1alpha1"
 	hwclient "github.com/setoru/cluster-api-provider-huawei/internal/cloud/client"
+	"github.com/setoru/cluster-api-provider-huawei/internal/cloud/ecs"
 	"github.com/setoru/cluster-api-provider-huawei/internal/cloud/scope"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/klog/v2"
 	clusterv1 "sigs.k8s.io/cluster-api/api/v1beta1"
 	"sigs.k8s.io/cluster-api/util"
 	"sigs.k8s.io/cluster-api/util/annotations"
@@ -140,12 +144,6 @@ func (r *HuaweiMachineReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		return ctrl.Result{}, nil
 	}
 
-	// Add finalizer first if not exist to avoid the race condition between init and delete
-	if !controllerutil.ContainsFinalizer(huaweiMachine, infrav1.MachineFinalizer) {
-		controllerutil.AddFinalizer(huaweiMachine, infrav1.MachineFinalizer)
-		return ctrl.Result{}, nil
-	}
-
 	// Handle deleted Machines
 	if !huaweiMachine.DeletionTimestamp.IsZero() {
 		return r.reconcileDelete(ctx, machineScope)
@@ -154,7 +152,85 @@ func (r *HuaweiMachineReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 }
 
 func (r *HuaweiMachineReconciler) reconcileNormal(ctx context.Context, machineScope *scope.MachineScope) (_ ctrl.Result, retErr error) {
+	logger := log.FromContext(ctx)
+	logger.Info("Reconciling HuaweiMachine")
+
+	// Add finalizer first if not exist to avoid the race condition between init and delete
+	if !controllerutil.ContainsFinalizer(machineScope.HuaweiMachine, infrav1.MachineFinalizer) {
+		controllerutil.AddFinalizer(machineScope.HuaweiMachine, infrav1.MachineFinalizer)
+		return ctrl.Result{}, nil
+	}
+
+	// Check if the infrastructure is ready, otherwise return and wait for the cluster object to be updated
+	if !machineScope.Cluster.Status.InfrastructureReady {
+		logger.Info("Waiting for HuaweiCluster Controller to create cluster infrastructure")
+		return ctrl.Result{}, nil
+	}
+
+	// if the machine is already provisioned, return
+	if machineScope.HuaweiMachine.Spec.ProviderID != nil {
+		// ensure ready state is set.
+		// This is required after move, because status is not moved to the target cluster.
+		machineScope.HuaweiMachine.Status.Ready = true
+		return ctrl.Result{}, nil
+	}
+
+	// Make sure bootstrap data is available and populated.
+	if machineScope.Machine.Spec.Bootstrap.DataSecretName == nil {
+		if !util.IsControlPlaneMachine(machineScope.Machine) && !conditions.IsTrue(machineScope.Cluster, clusterv1.ControlPlaneInitializedCondition) {
+			logger.Info("Waiting for the control plane to be initialized")
+			return ctrl.Result{}, nil
+		}
+
+		logger.Info("Waiting for the Bootstrap provider controller to set bootstrap data")
+		return ctrl.Result{}, nil
+	}
+
+	instance, err := ecs.GetExistingInstance(machineScope)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+	if instance == nil {
+		instance, err = ecs.CreateInstance(machineScope)
+		if err != nil {
+			return ctrl.Result{}, errors.Wrap(err, "failed to create worker HuaweiMachine")
+		}
+		addresses, err := extractNodeAddressesFromInstance(instance)
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+		machineScope.HuaweiMachine.Status.Addresses = addresses
+	}
+	providerId := instance.Id
+	machineScope.HuaweiMachine.Spec.ProviderID = &providerId
 	return ctrl.Result{}, nil
+}
+
+// extractNodeAddressesFromInstance maps the instance information from ECS to an array of NodeAddresses
+func extractNodeAddressesFromInstance(instance *ecsMdl.ServerDetail) ([]clusterv1.MachineAddress, error) {
+	if instance == nil {
+		return nil, fmt.Errorf("the ecs instance is nil")
+	}
+
+	nodeAddresses := make([]clusterv1.MachineAddress, 0)
+	klog.V(4).Infof("get addresses: %v", instance.Addresses)
+	// handle internal network interfaces
+	for _, addresses := range instance.Addresses {
+		for _, address := range addresses {
+			if address.Addr != "" {
+				ip := net.ParseIP(address.Addr)
+				if ip == nil {
+					return nil, fmt.Errorf("ECS instance had invalid IPv6 address: %s (%q)", instance.HostId, address.Addr)
+				}
+				if *address.OSEXTIPStype == ecsMdl.GetServerAddressOSEXTIPStypeEnum().FIXED {
+					nodeAddresses = append(nodeAddresses, clusterv1.MachineAddress{Type: clusterv1.MachineInternalIP, Address: ip.String()})
+				} else {
+					nodeAddresses = append(nodeAddresses, clusterv1.MachineAddress{Type: clusterv1.MachineExternalIP, Address: ip.String()})
+				}
+			}
+		}
+	}
+	return nodeAddresses, nil
 }
 
 func (r *HuaweiMachineReconciler) reconcileDelete(ctx context.Context, machineScope *scope.MachineScope) (_ ctrl.Result, retErr error) {
