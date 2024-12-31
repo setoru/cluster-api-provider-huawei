@@ -1,13 +1,15 @@
 # Adds namespace to all resources.
-namespace: cluster-api-provider-huawei-system
+namespace: caphw-system
 
 # Value of this field is prepended to the
 # names of all resources, e.g. a deployment named
 # "wordpress" becomes "alices-wordpress".
 # Note that it should also match with the prefix (text before '-') of the namespace
 # field above.
-namePrefix: cluster-api-provider-huawei-
+namePrefix: caphw-
 
+commonLabels:
+  cluster.x-k8s.io/provider: "infrastructure-caphw"
 # Labels to add to all resources and selectors.
 #labels:
 #- includeSelectors: true
@@ -41,6 +43,8 @@ patches:
   target:
     kind: Deployment
 
+patchesStrategicMerge:
+- manager_image_patch.yaml
 # [WEBHOOK] To enable webhook, uncomment all the sections with [WEBHOOK] prefix including the one in
 # crd/kustomization.yaml
 #- path: manager_webhook_patch.yaml
