@@ -11,6 +11,7 @@
           "controllers",
           "pkg"
         ],
+        "go_main": "cmd/main.go",
         "label": "CAPHW"
       }
     }
