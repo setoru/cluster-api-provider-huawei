@@ -2,7 +2,7 @@
   {
     "name": "huawei",
     "config": {
-      "image": "gcr.io/k8s-staging-cluster-api-huawei/cluster-api-huawei-controller",
+      "image": "ghcr.io/huaweiclouddeveloper/cluster-api-huawei-controller",
       "live_reload_deps": [
         "go.mod",
         "go.sum",
