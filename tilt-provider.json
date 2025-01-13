@@ -1,18 +1,18 @@
 [
-    {
-      "name": "huawei",
-      "config": {
-        "image": "ghcr.io/capi-samples/cluster-api-provider-huawei:dev",
-        "live_reload_deps": [
-          "main.go",
-          "go.mod",
-          "go.sum",
-          "api",
-          "controllers",
-          "pkg"
-        ],
-        "go_main": "cmd/main.go",
-        "label": "CAPHW"
-      }
+  {
+    "name": "huawei",
+    "config": {
+      "image": "ghcr.io/setoru/cluster-api-provider-huawei:dev",
+      "live_reload_deps": [
+        "cmd",
+        "go.mod",
+        "go.sum",
+        "api",
+        "internal",
+        "pkg"
+      ],
+      "go_main": "cmd/main.go",
+      "label": "CAPHW"
     }
+  }
 ]
