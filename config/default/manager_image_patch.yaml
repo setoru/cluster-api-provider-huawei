@@ -7,5 +7,5 @@ spec:
   template:
     spec:
       containers:
-        - image: ghcr.io/capi-samples/cluster-api-provider-huawei:dev
+        - image: ghcr.io/setoru/cluster-api-provider-huawei:dev
           name: manager
