@@ -36,6 +36,17 @@ func (s *Service) ReconcileNetwork() error {
 
 	// TODO: Routing tables
 
+	// NAT Gateways.
+	if err := s.reconcileNatGateways(); err != nil {
+		klog.Errorf("Failed to reconcile NatGateways: %v", err)
+		conditions.MarkFalse(
+			s.scope.InfraCluster(),
+			infrav1alpha1.NatGatewaysReadyCondition,
+			infrav1alpha1.NatGatewaysReconciliationFailedReason,
+			clusterv1.ConditionSeverityError, "failed to reconcile Nat Gateways")
+		return err
+	}
+
 	klog.Infof("Reconcile network completed successfully")
 	return nil
 }

@@ -41,3 +41,13 @@ const (
 	// ClusterSecurityGroupReconciliationFailedReason used when any errors occur during reconciliation of security groups.
 	ClusterSecurityGroupReconciliationFailedReason = "SecurityGroupReconciliationFailed"
 )
+
+const (
+	// NatGatewaysReadyCondition reports successful reconciliation of NAT gateways.
+	// Only applicable to managed clusters.
+	NatGatewaysReadyCondition clusterv1.ConditionType = "NatGatewaysReady"
+	// NatGatewaysCreationStartedReason set once when creating new NAT gateways.
+	NatGatewaysCreationStartedReason = "NatGatewaysCreationStarted"
+	// NatGatewaysReconciliationFailedReason used when any errors occur during reconciliation of NAT gateways.
+	NatGatewaysReconciliationFailedReason = "NatGatewaysReconciliationFailed"
+)
