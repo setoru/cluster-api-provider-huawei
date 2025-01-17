@@ -9,6 +9,7 @@ import (
 	"github.com/pkg/errors"
 	"k8s.io/klog/v2"
 	"k8s.io/utils/ptr"
+	clusterv1 "sigs.k8s.io/cluster-api/api/v1beta1"
 	"sigs.k8s.io/cluster-api/util"
 	"sigs.k8s.io/cluster-api/util/conditions"
 )
@@ -50,6 +51,16 @@ func (s *Service) reconcileNatGateways() error {
 	s.scope.SetNatGatewaysIPs(natGatewaysIps)
 
 	if len(subnetIds) > 0 {
+		// set NatGatewayCreationStarted if the condition has never been set before
+		if !conditions.Has(s.scope.InfraCluster(), infrav1alpha1.NatGatewaysReadyCondition) {
+			conditions.MarkFalse(s.scope.InfraCluster(),
+				infrav1alpha1.NatGatewaysReadyCondition,
+				infrav1alpha1.NatGatewaysCreationStartedReason,
+				clusterv1.ConditionSeverityInfo, "")
+			if err := s.scope.PatchObject(); err != nil {
+				return errors.Wrap(err, "failed to patch conditions")
+			}
+		}
 		err := s.createNatGateways(subnetIds)
 		if err != nil {
 			return err

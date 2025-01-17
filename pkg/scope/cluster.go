@@ -141,6 +141,7 @@ func (s *ClusterScope) PatchObject() error {
 		infrav1alpha1.VpcReadyCondition,
 		infrav1alpha1.SubnetsReadyCondition,
 		infrav1alpha1.ClusterSecurityGroupsReadyCondition,
+		infrav1alpha1.NatGatewaysReadyCondition,
 	}
 
 	conditions.SetSummary(s.HCCluster,
@@ -157,5 +158,6 @@ func (s *ClusterScope) PatchObject() error {
 			infrav1alpha1.VpcReadyCondition,
 			infrav1alpha1.SubnetsReadyCondition,
 			infrav1alpha1.ClusterSecurityGroupsReadyCondition,
+			infrav1alpha1.NatGatewaysReadyCondition,
 		}})
 }
