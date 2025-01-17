@@ -43,6 +43,13 @@ const (
 )
 
 const (
+	// LoadBalancerReadyCondition reports on whether a control plane load balancer was successfully reconciled.
+	LoadBalancerReadyCondition clusterv1.ConditionType = "LoadBalancerReady"
+	// LoadBalancerFailedReason used when an error occurs during load balancer reconciliation.
+	LoadBalancerFailedReason = "LoadBalancerFailed"
+)
+
+const (
 	// NatGatewaysReadyCondition reports successful reconciliation of NAT gateways.
 	// Only applicable to managed clusters.
 	NatGatewaysReadyCondition clusterv1.ConditionType = "NatGatewaysReady"

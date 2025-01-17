@@ -5,7 +5,6 @@ import (
 
 	infrav1alpha1 "github.com/HuaweiCloudDeveloper/cluster-api-provider-huawei/api/v1alpha1"
 	natMdl "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/nat/v2/model"
-	vpcMdl "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/vpc/v2/model"
 	"github.com/pkg/errors"
 	"k8s.io/klog/v2"
 	"k8s.io/utils/ptr"
@@ -21,46 +20,41 @@ func (s *Service) reconcileNatGateways() error {
 		return nil
 	}
 
-	listSubnetsRequest := &vpcMdl.ListSubnetsRequest{
-		VpcId: &s.scope.VPC().Id,
-	}
-	listSubnetsResponse, err := s.vpcClient.ListSubnets(listSubnetsRequest)
-	if err != nil {
-		return errors.Wrap(err, "failed to list subnets")
-	}
-
-	if len(*listSubnetsResponse.Subnets) == 0 {
+	if len(s.scope.Subnets()) == 0 {
 		klog.Infof("No subnets available, skipping NAT gateways reconcile")
 		return nil
 	}
 
-	for _, subnet := range *listSubnetsResponse.Subnets {
-		createNatGatewayRequest := &natMdl.CreateNatGatewayRequest{}
-		createNatGatewayRequest.Body = &natMdl.CreateNatGatewayRequestBody{
-			NatGateway: &natMdl.CreateNatGatewayOption{
-				Name:              fmt.Sprintf("nat-%s", util.RandomString(4)),
-				RouterId:          s.scope.VPC().Id,
-				Spec:              natMdl.GetCreateNatGatewayOptionSpecEnum().E_1,
-				InternalNetworkId: subnet.Id,
-			},
-		}
-		createNatGatewayResponse, err := s.natClient.CreateNatGateway(createNatGatewayRequest)
-		if err != nil {
-			return errors.Wrap(err, "failed to create nat gateway")
-		}
-		// allocate EIP to Nat Gateway
-		publicIpId, err := s.allocatePublicIp()
-		if err != nil {
-			return err
-		}
-		// create SNAT rules to access the Internet
-		err = s.createSnatRule(createNatGatewayResponse.NatGateway.Id, publicIpId, subnet.Id)
-		if err != nil {
-			return err
-		}
-		klog.Infof("Created Nat Gateway %s", createNatGatewayResponse.NatGateway.Id)
+	existing, err := s.describeNatGatewaysBySubnet()
+	if err != nil {
+		return err
 	}
-	conditions.MarkTrue(s.scope.InfraCluster(), infrav1alpha1.NatGatewaysReadyCondition)
+
+	natGatewaysIds := make([]string, 0)
+	subnetIds := make([]string, 0)
+
+	for _, subnet := range s.scope.Subnets() {
+		if ngw, ok := existing[subnet.Id]; ok {
+			natGatewaysIds = append(natGatewaysIds, ngw)
+			continue
+		}
+		subnetIds = append(subnetIds, subnet.Id)
+	}
+
+	natGatewaysIps, err := s.getNatGatewaysIps(natGatewaysIds)
+	if err != nil {
+		return err
+	}
+
+	s.scope.SetNatGatewaysIPs(natGatewaysIps)
+
+	if len(subnetIds) > 0 {
+		err := s.createNatGateways(subnetIds)
+		if err != nil {
+			return err
+		}
+		conditions.MarkTrue(s.scope.InfraCluster(), infrav1alpha1.NatGatewaysReadyCondition)
+	}
 	return nil
 }
 
@@ -89,6 +83,35 @@ func (s *Service) deleteNatGateways() error {
 			return errors.Wrap(err, "failed to delete nat gateways")
 		}
 		klog.Infof("Delete Nat Gateway %s", natGateway.Id)
+	}
+	return nil
+}
+
+func (s *Service) createNatGateways(subnetIds []string) (err error) {
+	for _, subnet := range subnetIds {
+		createNatGatewayRequest := &natMdl.CreateNatGatewayRequest{}
+		createNatGatewayRequest.Body = &natMdl.CreateNatGatewayRequestBody{
+			NatGateway: &natMdl.CreateNatGatewayOption{
+				Name:              fmt.Sprintf("nat-%s", util.RandomString(4)),
+				RouterId:          s.scope.VPC().Id,
+				Spec:              natMdl.GetCreateNatGatewayOptionSpecEnum().E_1,
+				InternalNetworkId: subnet,
+			},
+		}
+		createNatGatewayResponse, err := s.natClient.CreateNatGateway(createNatGatewayRequest)
+		if err != nil {
+			return errors.Wrap(err, "failed to create nat gateway")
+		}
+		// allocate EIP to Nat Gateway
+		publicIpId, err := s.allocatePublicIp()
+		if err != nil {
+			return err
+		}
+		// create SNAT rules to access the Internet
+		if err = s.createSnatRule(createNatGatewayResponse.NatGateway.Id, publicIpId, subnet); err != nil {
+			return err
+		}
+		klog.Infof("Created Nat Gateway %s", createNatGatewayResponse.NatGateway.Id)
 	}
 	return nil
 }
@@ -158,4 +181,34 @@ func (s *Service) deleteNatGatewaysExistingRule(natGatewayId string) error {
 		}
 	}
 	return nil
+}
+
+func (s *Service) describeNatGatewaysBySubnet() (map[string]string, error) {
+	request := &natMdl.ListNatGatewaysRequest{
+		RouterId: &s.scope.VPC().Id,
+	}
+	response, err := s.natClient.ListNatGateways(request)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to list nat gateways")
+	}
+	gatewaysIds := map[string]string{}
+	for _, natGateway := range *response.NatGateways {
+		gatewaysIds[natGateway.InternalNetworkId] = natGateway.Id
+	}
+	return gatewaysIds, nil
+}
+
+func (s *Service) getNatGatewaysIps(natGatewayIds []string) ([]string, error) {
+	request := &natMdl.ListNatGatewaySnatRulesRequest{
+		NatGatewayId: &natGatewayIds,
+	}
+	response, err := s.natClient.ListNatGatewaySnatRules(request)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to list nat gateway snat rule")
+	}
+	nateGatewaysIps := make([]string, 0)
+	for _, snat := range *response.SnatRules {
+		nateGatewaysIps = append(nateGatewaysIps, snat.FloatingIpAddress)
+	}
+	return nateGatewaysIps, nil
 }
