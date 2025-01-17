@@ -5,6 +5,7 @@ import (
 
 	eipMdl "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/eip/v2/model"
 	"github.com/pkg/errors"
+	"k8s.io/klog/v2"
 	"k8s.io/utils/ptr"
 	"sigs.k8s.io/cluster-api/util"
 )
@@ -29,4 +30,16 @@ func (s *Service) allocatePublicIp() (string, error) {
 		return "", errors.Wrap(err, "failed to create public ip")
 	}
 	return *createPublicIpResponse.Publicip.Id, nil
+}
+
+func (s *Service) releasePublicIp(publicIpId string) error {
+	delPubIpReq := &eipMdl.DeletePublicipRequest{
+		PublicipId: publicIpId,
+	}
+	delPubIpRes, err := s.eipClient.DeletePublicip(delPubIpReq)
+	if err != nil {
+		return errors.Wrapf(err, "failed to delete public ip %s", publicIpId)
+	}
+	klog.Infof("Delete public ip response: %v", delPubIpRes)
+	return nil
 }

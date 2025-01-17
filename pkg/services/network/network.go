@@ -106,6 +106,30 @@ func (s *Service) DeleteNetwork() error {
 		clusterv1.DeletedReason,
 		clusterv1.ConditionSeverityInfo, "")
 
+	// Delete Nat Gateways
+	conditions.MarkFalse(
+		s.scope.InfraCluster(),
+		infrav1alpha1.NatGatewaysReadyCondition,
+		clusterv1.DeletingReason,
+		clusterv1.ConditionSeverityInfo, "")
+	if err := s.scope.PatchObject(); err != nil {
+		return err
+	}
+	if err := s.deleteNatGateways(); err != nil {
+		klog.Errorf("Failed to delete NateGateways: %v", err)
+		conditions.MarkFalse(
+			s.scope.InfraCluster(),
+			infrav1alpha1.NatGatewaysReadyCondition,
+			"DeletingFailed",
+			clusterv1.ConditionSeverityWarning, "failed to delete Nate Gateways")
+		return err
+	}
+	conditions.MarkFalse(
+		s.scope.InfraCluster(),
+		infrav1alpha1.NatGatewaysReadyCondition,
+		clusterv1.DeletedReason,
+		clusterv1.ConditionSeverityInfo, "")
+
 	klog.Infof("Delete network completed successfully")
 	return nil
 }
