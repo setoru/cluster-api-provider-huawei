@@ -5,6 +5,7 @@ import (
 
 	infrav1alpha1 "github.com/HuaweiCloudDeveloper/cluster-api-provider-huawei/api/v1alpha1"
 	natMdl "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/nat/v2/model"
+	vpcMdl "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/vpc/v2/model"
 	"github.com/pkg/errors"
 	"k8s.io/klog/v2"
 	"k8s.io/utils/ptr"
@@ -88,14 +89,22 @@ func (s *Service) deleteNatGateways() error {
 }
 
 func (s *Service) createNatGateways(subnetIds []string) (err error) {
-	for _, subnet := range subnetIds {
+	for _, subnetId := range subnetIds {
+		showSubnetRequest := &vpcMdl.ShowSubnetRequest{SubnetId: subnetId}
+		showSubnetResponse, err := s.vpcClient.ShowSubnet(showSubnetRequest)
+		if err != nil {
+			return errors.Wrap(err, "failed to find subnet")
+		}
+		if showSubnetResponse.Subnet.VpcId != s.scope.VPC().Id {
+			continue
+		}
 		createNatGatewayRequest := &natMdl.CreateNatGatewayRequest{}
 		createNatGatewayRequest.Body = &natMdl.CreateNatGatewayRequestBody{
 			NatGateway: &natMdl.CreateNatGatewayOption{
 				Name:              fmt.Sprintf("nat-%s", util.RandomString(4)),
 				RouterId:          s.scope.VPC().Id,
 				Spec:              natMdl.GetCreateNatGatewayOptionSpecEnum().E_1,
-				InternalNetworkId: subnet,
+				InternalNetworkId: subnetId,
 			},
 		}
 		createNatGatewayResponse, err := s.natClient.CreateNatGateway(createNatGatewayRequest)
@@ -108,7 +117,7 @@ func (s *Service) createNatGateways(subnetIds []string) (err error) {
 			return err
 		}
 		// create SNAT rules to access the Internet
-		if err = s.createSnatRule(createNatGatewayResponse.NatGateway.Id, publicIpId, subnet); err != nil {
+		if err = s.createSnatRule(createNatGatewayResponse.NatGateway.Id, publicIpId, subnetId); err != nil {
 			return err
 		}
 		klog.Infof("Created Nat Gateway %s", createNatGatewayResponse.NatGateway.Id)
