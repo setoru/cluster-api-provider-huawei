@@ -115,6 +115,11 @@ func (s *ClusterScope) SetSubnets(subnets infrav1alpha1.Subnets) {
 	s.HCCluster.Spec.NetworkSpec.Subnets = subnets
 }
 
+// SetNatGatewaysIPs sets the Nat Gateways Public IPs.
+func (s *ClusterScope) SetNatGatewaysIPs(ips []string) {
+	s.HCCluster.Status.Network.NatGatewaysIPs = ips
+}
+
 // Region returns the cluster region.
 func (s *ClusterScope) Region() string {
 	return s.HCCluster.Spec.Region
@@ -136,6 +141,7 @@ func (s *ClusterScope) PatchObject() error {
 		infrav1alpha1.VpcReadyCondition,
 		infrav1alpha1.SubnetsReadyCondition,
 		infrav1alpha1.ClusterSecurityGroupsReadyCondition,
+		infrav1alpha1.NatGatewaysReadyCondition,
 	}
 
 	conditions.SetSummary(s.HCCluster,
@@ -152,5 +158,6 @@ func (s *ClusterScope) PatchObject() error {
 			infrav1alpha1.VpcReadyCondition,
 			infrav1alpha1.SubnetsReadyCondition,
 			infrav1alpha1.ClusterSecurityGroupsReadyCondition,
+			infrav1alpha1.NatGatewaysReadyCondition,
 		}})
 }

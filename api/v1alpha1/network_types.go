@@ -18,7 +18,7 @@ package v1alpha1
 
 import "fmt"
 
-// NetworkSpect encapsulates the configuration options for HuaweiCloud network.
+// NetworkSpec encapsulates the configuration options for HuaweiCloud network.
 type NetworkSpec struct {
 	// VPC configuration.
 	// +optional
@@ -142,4 +142,6 @@ func (s *SecurityGroup) String() string {
 type NetworkStatus struct {
 	// SecurityGroups is a map from the role/kind of the security group to its unique name, if any.
 	SecurityGroups map[SecurityGroupRole]SecurityGroup `json:"securityGroups,omitempty"`
+	// NatGatewaysIPs contains the public IPs of the NAT Gateways
+	NatGatewaysIPs []string `json:"natGatewaysIPs,omitempty"`
 }
