@@ -3,6 +3,10 @@ FROM golang:1.22 AS builder
 ARG TARGETOS
 ARG TARGETARCH
 
+# Run this with docker build --build_arg $(go env GOPROXY) to override the goproxy
+ARG goproxy=https://proxy.golang.org
+ENV GOPROXY=$goproxy
+
 WORKDIR /workspace
 # Copy the Go Modules manifests
 COPY go.mod go.mod

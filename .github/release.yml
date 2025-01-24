@@ -1,0 +1,21 @@
+changelog:
+  categories:
+    - title: ❗ API Changes
+      labels:
+        - kind/api-change
+    - title: 🚀 Features
+      labels:
+        - kind/feature
+    - title: 🐛 Bug Fixes
+      labels:
+        - kind/bug
+        - kind/regression
+    - title: 📖 Documentation
+      labels:
+        - kind/documentation
+    - title: Dependencies
+      labels:
+        - area/dependency
+    - title: 🌱 Others
+      labels:
+        - "*"
