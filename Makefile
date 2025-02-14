@@ -38,7 +38,7 @@ CORE_CONTROLLER_IMG ?= $(REGISTRY)/$(CORE_IMAGE_NAME)
 CORE_CONTROLLER_ORIGINAL_IMG := ghcr.io/huaweiclouddeveloper/cluster-api-huawei-controller
 CORE_CONTROLLER_NAME := capa-controller-manager
 CORE_CONFIG_DIR := config/default
-CORE_NAMESPACE := caph-system
+CORE_NAMESPACE := caphw-system
 
 # Image URL to use all building/pushing image targets
 IMG ?= $(CORE_CONTROLLER_IMG):$(RELEASE_TAG)

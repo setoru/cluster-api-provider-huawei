@@ -47,7 +47,7 @@ func getLoadBalancerShareType(shareType string) elbmodel.CreateLoadBalancerBandw
 
 func (s *Service) createListener(lbId string, port int32) (string, error) {
 	request := &elbmodel.CreateListenerRequest{}
-	name := fmt.Sprintf("caph-tcp-%d", port)
+	name := fmt.Sprintf("caphw-tcp-%d", port)
 	listenerbody := &elbmodel.CreateListenerOption{
 		LoadbalancerId: lbId,
 		Name:           &name,
@@ -80,7 +80,7 @@ func (s *Service) getListener(listenerId string) (*elbmodel.Listener, error) {
 
 func (s *Service) createPool(listenerId string) (string, error) {
 	request := &elbmodel.CreatePoolRequest{}
-	name := fmt.Sprintf("caph-svc-gp-%s", listenerId[:8])
+	name := fmt.Sprintf("caphw-svc-gp-%s", listenerId[:8])
 	typePool := "instance"
 	poolbody := &elbmodel.CreatePoolOption{
 		LbAlgorithm: "ROUND_ROBIN",
@@ -314,7 +314,7 @@ func (s *Service) getAvailabilityZones() ([]string, error) {
 
 func (s *Service) createLoadBalancer(name string) error {
 	request := &elbmodel.CreateLoadBalancerRequest{}
-	nameBandwidth := "eip-caph"
+	nameBandwidth := "eip-caphw"
 	chargeMode := getLoadBalancerChargeMode("traffic")
 	shareType := getLoadBalancerShareType("per")
 	var bwSize int32 = 100

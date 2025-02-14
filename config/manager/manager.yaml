@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: cluster-api-provider-huawei
     app.kubernetes.io/managed-by: kustomize
     cluster.x-k8s.io/provider: infrastructure-huawei
-  name: caph-system
+  name: caphw-system
 ---
 apiVersion: apps/v1
 kind: Deployment

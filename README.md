@@ -1,4 +1,4 @@
-# Kubernetes Cluster API Provider Huawei Cloud
+# Kubernetes Cluster API Provider Huawei Cloud (CAPHW)
 
 Kubernetes-native declarative infrastructure for [Huawei Cloud](https://www.huaweicloud.com/).
 

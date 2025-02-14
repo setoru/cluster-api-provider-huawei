@@ -13,7 +13,7 @@ import (
 func (s *Service) ReconcileSecurityGroups() error {
 	klog.Info("Reconciling security groups")
 
-	securityGroupName := "sg-caph"
+	securityGroupName := "sg-caphw"
 
 	// Check if the security group already exists
 	listSecurityGroupsRequest := &model.ListSecurityGroupsRequest{
@@ -193,7 +193,7 @@ func (s *Service) DeleteSecurityGroups() error {
 	}
 
 	// Retrieve the security group by name
-	securityGroupName := "sg-caph"
+	securityGroupName := "sg-caphw"
 	listSecurityGroupsRequest := &model.NeutronListSecurityGroupsRequest{
 		Name: &securityGroupName,
 	}

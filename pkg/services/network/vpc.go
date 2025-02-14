@@ -20,7 +20,7 @@ func (s *Service) reconcileVPC() error {
 
 	createRequest := &model.CreateVpcRequest{}
 	cidrVpc := "192.168.0.0/16"
-	nameVpc := "vpc-caph"
+	nameVpc := "vpc-caphw"
 	vpcbody := &model.CreateVpcOption{
 		Cidr: &cidrVpc,
 		Name: &nameVpc,
