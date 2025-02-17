@@ -335,7 +335,7 @@ release-manifests: ## Release manifest files
 release: clean-release check-release-tag check-release-branch $(RELEASE_DIR) $(GORELEASER)
 	git checkout "${RELEASE_TAG}"
 	$(MAKE) release-changelog
-	CORE_CONTROLLER_IMG=$(PROD_REGISTRY)/$(CORE_IMAGE_NAME) $(MAKE) release-manifests
+	CORE_CONTROLLER_IMG=$(CORE_CONTROLLER_IMG) $(MAKE) release-manifests
 	$(GORELEASER) release --config $(GORELEASER_CONFIG) --release-notes $(RELEASE_DIR)/CHANGELOG.md --clean
 
 .PHONY: clean
