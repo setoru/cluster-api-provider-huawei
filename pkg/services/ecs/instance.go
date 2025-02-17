@@ -102,6 +102,7 @@ func (s *Service) GetCoreSecurityGroups(scope *scope.MachineScope) ([]string, er
 	switch scope.Role() {
 	case "control-plane":
 		sgRoles = append(sgRoles, infrav1.SecurityGroupControlPlane)
+	case "node":
 	default:
 		return nil, errors.Errorf("Unknown node role %q", scope.Role())
 	}
