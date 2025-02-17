@@ -27,7 +27,7 @@ func (s *Service) reconcileSubnets() error {
 	if len(*response.Subnets) == 0 {
 		createRequest := &model.CreateSubnetRequest{}
 		subnetbody := &model.CreateSubnetOption{
-			Name:      "subnet-caph",
+			Name:      "subnet-caphw",
 			Cidr:      "192.168.1.0/24",
 			VpcId:     s.scope.VPC().Id,
 			GatewayIp: "192.168.1.1",

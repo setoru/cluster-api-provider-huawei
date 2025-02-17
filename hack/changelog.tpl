@@ -1,4 +1,4 @@
-# Release notes for Cluster API Provider Huawei (CAPH) <RELEASE_VERSION>
+# Release notes for Cluster API Provider Huawei (CAPHW) <RELEASE_VERSION>
 
 [Documentation](https://github.com/HuaweiCloudDeveloper/cluster-api-provider-huawei)
 

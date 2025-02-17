@@ -47,7 +47,7 @@ build huawei manager from local cluster-api-provider-huawei source and run it in
 
 After your kind management cluster is up and running with Tilt, you can deploy a workload cluster in the Tilt web UI based on YAML templates from the directories specified in the `template_dirs` field from the tilt-settings.yaml file.
 
-Open the Tilt web UI and navigate to the CAPH.templates section, Click **Create default cluster** icon to deploy a new workload cluster.
+Open the Tilt web UI and navigate to the CAPHW.templates section, Click **Create default cluster** icon to deploy a new workload cluster.
 
 ## Accessing the workload cluster
 
