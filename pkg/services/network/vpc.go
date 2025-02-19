@@ -1,8 +1,6 @@
 package network
 
 import (
-	"strings"
-
 	infrav1alpha1 "github.com/HuaweiCloudDeveloper/cluster-api-provider-huawei/api/v1alpha1"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/vpc/v2/model"
 	"github.com/pkg/errors"
@@ -67,7 +65,7 @@ func (s *Service) deleteVPC() error {
 	}
 	response, err := s.vpcClient.DeleteVpc(deleteRequest)
 	if err != nil {
-		if strings.Contains(err.Error(), "404") {
+		if s.errHandler.StatusCode(err) == 404 {
 			klog.Info("VPC already deleted", "vpcID", s.scope.VPC().Id)
 			return nil
 		}

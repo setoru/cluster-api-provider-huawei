@@ -3,6 +3,7 @@ package elb
 import (
 	"k8s.io/klog/v2"
 
+	errs "github.com/HuaweiCloudDeveloper/cluster-api-provider-huawei/pkg/errors"
 	"github.com/HuaweiCloudDeveloper/cluster-api-provider-huawei/pkg/scope"
 	eip "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/eip/v2"
 	eipregion "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/eip/v2/region"
@@ -11,9 +12,10 @@ import (
 )
 
 type Service struct {
-	scope     *scope.ClusterScope
-	elbClient *elb.ElbClient
-	eipClient *eip.EipClient
+	scope      *scope.ClusterScope
+	elbClient  *elb.ElbClient
+	eipClient  *eip.EipClient
+	errHandler errs.ELBErrorHandler
 }
 
 func NewService(scope *scope.ClusterScope) (*Service, error) {
@@ -50,9 +52,11 @@ func NewService(scope *scope.ClusterScope) (*Service, error) {
 	}
 	eipCli := eip.NewEipClient(eipHCHttpCli)
 
+	errhandler := errs.ELBErrorHandler{BaseErrorHandler: errs.BaseErrorHandler{}}
 	return &Service{
-		elbClient: elbCli,
-		eipClient: eipCli,
-		scope:     scope,
+		elbClient:  elbCli,
+		eipClient:  eipCli,
+		scope:      scope,
+		errHandler: errhandler,
 	}, nil
 }

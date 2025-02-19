@@ -4,6 +4,7 @@ import (
 	natReg "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/nat/v2/region"
 	"k8s.io/klog/v2"
 
+	errs "github.com/HuaweiCloudDeveloper/cluster-api-provider-huawei/pkg/errors"
 	"github.com/HuaweiCloudDeveloper/cluster-api-provider-huawei/pkg/scope"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/config"
 	eip "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/eip/v2"
@@ -13,10 +14,11 @@ import (
 )
 
 type Service struct {
-	scope     *scope.ClusterScope
-	vpcClient *vpc.VpcClient
-	eipClient *eip.EipClient
-	natClient *nat.NatClient
+	scope      *scope.ClusterScope
+	vpcClient  *vpc.VpcClient
+	eipClient  *eip.EipClient
+	natClient  *nat.NatClient
+	errHandler errs.VPCErrorHandler
 }
 
 func NewService(scope *scope.ClusterScope) (*Service, error) {
@@ -62,10 +64,12 @@ func NewService(scope *scope.ClusterScope) (*Service, error) {
 	}
 	natCli := nat.NewNatClient(natHCHttpCli)
 
+	errhandler := errs.VPCErrorHandler{BaseErrorHandler: errs.BaseErrorHandler{}}
 	return &Service{
-		scope:     scope,
-		vpcClient: vpcCli,
-		eipClient: eipCli,
-		natClient: natCli,
+		scope:      scope,
+		vpcClient:  vpcCli,
+		eipClient:  eipCli,
+		natClient:  natCli,
+		errHandler: errhandler,
 	}, nil
 }
