@@ -3,6 +3,7 @@
 
 <!--
 Add one of the following kinds:
+/kind enhancement
 /kind feature
 /kind bug
 /kind api-change

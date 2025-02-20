@@ -1,8 +1,6 @@
 package network
 
 import (
-	"strings"
-
 	infrav1alpha1 "github.com/HuaweiCloudDeveloper/cluster-api-provider-huawei/api/v1alpha1"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/vpc/v2/model"
 	"github.com/pkg/errors"
@@ -78,7 +76,7 @@ func (s *Service) deleteSubnets() error {
 	}
 	response, err := s.vpcClient.ListSubnets(request)
 	if err != nil {
-		if strings.Contains(err.Error(), "VPC.0202") {
+		if s.errHandler.IsNotFound(err) {
 			klog.Infof("VPC not found")
 			return nil
 		}

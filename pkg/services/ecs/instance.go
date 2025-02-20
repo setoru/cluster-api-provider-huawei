@@ -33,7 +33,6 @@ import (
 	"k8s.io/utils/ptr"
 
 	infrav1 "github.com/HuaweiCloudDeveloper/cluster-api-provider-huawei/api/v1alpha1"
-	"github.com/HuaweiCloudDeveloper/cluster-api-provider-huawei/pkg/ecserrors"
 	"github.com/HuaweiCloudDeveloper/cluster-api-provider-huawei/pkg/scope"
 )
 
@@ -397,7 +396,7 @@ func (s *Service) InstanceIfExists(id *string) (*infrav1.Instance, error) {
 
 	out, err := s.ShowInstance(*id)
 	switch {
-	case ecserrors.IsNotFound(err):
+	case s.errHandler.IsNotFound(err):
 		return nil, ErrInstanceNotFoundByID
 	case err != nil:
 		return nil, ErrShowInstance

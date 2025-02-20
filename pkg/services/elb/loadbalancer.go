@@ -3,7 +3,6 @@ package elb
 import (
 	"fmt"
 	"net/http"
-	"strings"
 
 	infrav1alpha1 "github.com/HuaweiCloudDeveloper/cluster-api-provider-huawei/api/v1alpha1"
 	eipmodel "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/eip/v2/model"
@@ -59,13 +58,13 @@ func (s *Service) createListener(lbId string, port int32) (string, error) {
 	}
 	response, err := s.elbClient.CreateListener(request)
 	if err != nil {
-		// listener is already exists
-		if strings.Contains(err.Error(), "ELB.8907") {
+		if s.errHandler.IsExists(err) {
 			return "", nil
+		} else {
+			return "", err
 		}
-		return "", err
 	}
-	fmt.Println("create listener success")
+	klog.Info("create listener success")
 	return response.Listener.Id, nil
 }
 
@@ -97,7 +96,7 @@ func (s *Service) createPool(listenerId string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Println("create pool success")
+	klog.Info("create pool success")
 	return response.Pool.Id, nil
 }
 
@@ -277,7 +276,7 @@ func (s *Service) getLoadBalancerByName(name string) (*elbmodel.LoadBalancer, er
 
 	response, err := s.elbClient.ListLoadBalancers(request)
 	if err != nil {
-		if isNotFoundError(err) {
+		if s.errHandler.IsNotFound(err) {
 			return nil, nil
 		}
 		return nil, errors.Wrapf(err, "failed to list load balancers with name %s", name)
@@ -288,10 +287,6 @@ func (s *Service) getLoadBalancerByName(name string) (*elbmodel.LoadBalancer, er
 	}
 
 	return &(*response.Loadbalancers)[0], nil
-}
-
-func isNotFoundError(err error) bool {
-	return strings.Contains(err.Error(), "APIGW.0101")
 }
 
 func (s *Service) getAvailabilityZones() ([]string, error) {
