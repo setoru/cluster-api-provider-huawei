@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/basic"
 	"github.com/pkg/errors"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/utils/ptr"
@@ -28,6 +29,7 @@ type MachineScopeParams struct {
 	Machine      *clusterv1.Machine
 	InfraCluster ECSScope
 	HCMachine    *infrav1.HuaweiCloudMachine
+	Credentials  *basic.Credentials
 }
 
 // NewMachineScope creates a new MachineScope from the supplied parameters.
@@ -66,6 +68,7 @@ func NewMachineScope(params MachineScopeParams) (*MachineScope, error) {
 		Machine:      params.Machine,
 		InfraCluster: params.InfraCluster,
 		HCMachine:    params.HCMachine,
+		Credentials:  params.Credentials,
 	}, nil
 }
 
@@ -79,6 +82,7 @@ type MachineScope struct {
 	Machine      *clusterv1.Machine
 	InfraCluster ECSScope
 	HCMachine    *infrav1.HuaweiCloudMachine
+	Credentials  *basic.Credentials
 }
 
 // Name returns the HuaweiCloudMachine name.
@@ -201,6 +205,10 @@ func (m *MachineScope) GetRawBootstrapDataWithFormat() ([]byte, string, error) {
 	}
 
 	return value, string(secret.Data["format"]), nil
+}
+
+func (m *MachineScope) GetCredentials() *basic.Credentials {
+	return m.Credentials
 }
 
 // PatchObject persists the machine spec and status.
