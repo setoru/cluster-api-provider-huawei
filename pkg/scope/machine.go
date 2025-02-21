@@ -126,8 +126,8 @@ func (m *MachineScope) GetProviderID() string {
 }
 
 // SetProviderID sets the HuaweiCloudMachine providerID in spec.
-func (m *MachineScope) SetProviderID(instanceID, availabilityZone string) {
-	providerID := GenerateProviderID(availabilityZone, instanceID)
+func (m *MachineScope) SetProviderID(instanceID string) {
+	providerID := GenerateProviderID(instanceID)
 	m.HCMachine.Spec.ProviderID = ptr.To[string](providerID)
 }
 
