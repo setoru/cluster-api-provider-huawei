@@ -96,5 +96,5 @@ const ProviderIDPrefix = "huaweicloud://"
 //
 // By default, the last id provided is used as identifier (last part).
 func GenerateProviderID(ids ...string) string {
-	return fmt.Sprintf("%s/%s", ProviderIDPrefix, strings.Join(ids, "/"))
+	return fmt.Sprintf("%s%s", ProviderIDPrefix, strings.Join(ids, "/"))
 }

@@ -184,7 +184,7 @@ func (s *Service) CreateInstance(scope *scope.MachineScope, userData []byte,
 	}
 
 	// Set the providerID and instanceID as soon as we create an instance so that we keep it in case of errors afterward
-	scope.SetProviderID(out.ID, out.AvailabilityZone)
+	scope.SetProviderID(out.ID)
 	scope.SetInstanceID(out.ID)
 
 	return out, nil
@@ -195,7 +195,6 @@ func (s *Service) runInstance(i *infrav1.Instance) (*infrav1.Instance, error) {
 		XClientToken: ptr.To(string(uuid.NewUUID())),
 		Body: &ecsModel.CreateServersRequestBody{
 			Server: &ecsModel.PrePaidServer{
-				AdminPass: ptr.To("dangerous@2025"),
 				Name:      generateInstanceName("caphw-ecs"),
 				ImageRef:  i.ImageID,
 				FlavorRef: i.Type,

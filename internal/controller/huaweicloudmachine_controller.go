@@ -345,7 +345,7 @@ func (r *HuaweiCloudMachineReconciler) reconcileNormal(_ context.Context, machin
 	}
 
 	// Make sure Spec.ProviderID and Spec.InstanceID are always set.
-	machineScope.SetProviderID(instance.ID, instance.AvailabilityZone)
+	machineScope.SetProviderID(instance.ID)
 	machineScope.SetInstanceID(instance.ID)
 
 	existingInstanceState := machineScope.GetInstanceState()
