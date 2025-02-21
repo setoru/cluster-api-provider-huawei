@@ -169,6 +169,22 @@ func (s *Service) CreateInstance(scope *scope.MachineScope, userData []byte,
 		input.PublicIPOnLaunch = ptr.To(false)
 	}
 
+	if scope.IsControlPlane() {
+		cloudConf := &CloudConfig{
+			Region:    s.scope.Region(),
+			AccessKey: scope.Credentials.AK,
+			SecretKey: scope.Credentials.SK,
+			VPCID:     s.scope.VPC().Id,
+			SubnetID:  subnetID,
+		}
+		userData, err = cloudConf.appendCloudConfig(userData)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to append cloud config")
+		}
+	}
+
+	klog.Infof("userData:\n%s\n", string(userData))
+
 	input.UserData = ptr.To[string](base64.StdEncoding.EncodeToString(userData))
 
 	// Set security groups.
@@ -186,7 +202,6 @@ func (s *Service) CreateInstance(scope *scope.MachineScope, userData []byte,
 	// Set the providerID and instanceID as soon as we create an instance so that we keep it in case of errors afterward
 	scope.SetProviderID(out.ID, out.AvailabilityZone)
 	scope.SetInstanceID(out.ID)
-
 	return out, nil
 }
 

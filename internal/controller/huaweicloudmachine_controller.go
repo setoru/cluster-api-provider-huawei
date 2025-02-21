@@ -125,6 +125,7 @@ func (r *HuaweiCloudMachineReconciler) Reconcile(ctx context.Context, req ctrl.R
 		Machine:      machine,
 		InfraCluster: infraCluster,
 		HCMachine:    hcMachine,
+		Credentials:  r.Credentials,
 	})
 	if err != nil {
 		log.Error(err, "failed to create scope")
@@ -223,7 +224,6 @@ func (r *HuaweiCloudMachineReconciler) SetupWithManager(mgr ctrl.Manager) error 
 
 func (r *HuaweiCloudMachineReconciler) reconcileDelete(machineScope *scope.MachineScope, _ hwbasic.ClusterScoper, ecsScope scope.ECSScope) (ctrl.Result, error) {
 	machineScope.Logger.Info("Handling deleted HuaweiCloudMachine")
-
 	ecsSvc, err := ecs.NewService(ecsScope)
 	if err != nil {
 		machineScope.Logger.Error(err, "failed to get ECS service")
