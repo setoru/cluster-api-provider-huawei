@@ -375,7 +375,8 @@ func (s *Service) CheckJob(jobId string) error {
 		JobId: jobId,
 	}
 
-	timeout := time.After(time.Minute)
+	wait := 2 * time.Minute
+	timeout := time.After(wait)
 	for {
 		resp, err := s.ECSClient.ShowJob(req)
 		if err != nil {
@@ -391,7 +392,7 @@ func (s *Service) CheckJob(jobId string) error {
 		case ecsModel.GetShowJobResponseStatusEnum().INIT, ecsModel.GetShowJobResponseStatusEnum().RUNNING:
 			select {
 			case <-timeout:
-				return fmt.Errorf("job timed out after 1 minute")
+				return fmt.Errorf("job timed out after %d seconds", wait)
 			case <-time.After(1 * time.Second):
 				continue
 			}
