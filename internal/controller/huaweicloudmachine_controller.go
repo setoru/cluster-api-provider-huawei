@@ -386,7 +386,7 @@ func (r *HuaweiCloudMachineReconciler) reconcileNormal(_ context.Context, machin
 	}
 
 	// tasks that can take place during all known instance states
-	if machineScope.InstanceIsInKnownState() {
+	if machineScope.InstanceIsInKnownState() && machineScope.IsControlPlane() {
 		if err := ecsSvc.AttachInstanceToElb(instance); err != nil {
 			machineScope.Logger.Error(err, "failed to attach instance to ELB")
 			return ctrl.Result{}, err

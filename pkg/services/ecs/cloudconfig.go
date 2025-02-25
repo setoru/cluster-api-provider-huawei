@@ -50,8 +50,11 @@ func (c *CloudConfig) genCloudProviderSecretTask() (writeFile *WriteFile, runCmd
 	}
 
 	runCmd = []string{
-		"if ! kubectl get secret cloud-config; then kubectl create secret generic cloud-config --from-file=/etc/kubernetes/cloud-config; fi",
-		// "rm -rf /etc/kubernetes/cloud-config",
+		// TODO: remove sleep if we can find a better way to wait for the cluster to be ready
+		"sleep 10",
+		"export KUBECONFIG=/etc/kubernetes/super-admin.conf",
+		"if ! kubectl -n kube-system get secret cloud-config; then kubectl -n kube-system create secret generic cloud-config --from-file=/etc/kubernetes/cloud-config; fi",
+		"rm -rf /etc/kubernetes/cloud-config",
 	}
 
 	return writeFile, runCmd, nil
