@@ -27,6 +27,5 @@ go.work
 *~
 .tiltbuild/*
 _artifacts/*
-hack/tools/bin/
 out/
 .trunk/

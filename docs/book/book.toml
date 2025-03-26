@@ -1,0 +1,27 @@
+[book]
+authors = ["The Cluster API Provider Huawei Maintainers"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Kubernetes Cluster API Provider Huawei"
+
+[output.html]
+curly-quotes = true
+git-repository-url = "github.com/HuaweiCloudDeveloper/cluster-api-provider-huawei"
+additional-css = ["theme/css/general.css"]
+
+[output.html.fold]
+enable = true
+level = 0
+
+[output.html.playground]
+editable = true
+
+[preprocessor.tabulate]
+command = "mdbook-tabulate"
+
+[preprocessor.releaselink]
+command = "mdbook-releaselink"
+
+[preprocessor.embed]
+command = "mdbook-embed"

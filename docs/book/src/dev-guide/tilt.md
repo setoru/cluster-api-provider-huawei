@@ -1,4 +1,4 @@
-# Developing Cluster API Provider Huawei for with Tilt
+# Developing Cluster API Provider Huawei with Tilt
 
 ## Overview
 
