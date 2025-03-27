@@ -13,6 +13,8 @@
 # limitations under the License.
 
 ## Tool Versions
+MDBOOK_VERSION := v0.4.5
+PLANTUML_VERSION := 1.2020.16
 RELEASE_NOTES_VERSION := v0.16.5
 GORELEASER_VERSION := v1.24.0
 KUSTOMIZE_VERSION := v5.5.0

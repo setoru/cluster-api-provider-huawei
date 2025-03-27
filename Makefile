@@ -136,6 +136,16 @@ lint: golangci-lint ## Run golangci-lint linter
 lint-fix: golangci-lint ## Run golangci-lint linter and perform fixes
 	$(GOLANGCI_LINT) run --fix
 
+##@ Docs
+
+.PHONY: serve-book
+serve-book: ## Run the book locally
+	$(MAKE) -C docs/book serve
+
+.PHONY: build-book
+build-book: ## Build the book
+	$(MAKE) -C docs/book build
+
 ##@ Build
 
 .PHONY: build
