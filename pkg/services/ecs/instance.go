@@ -118,7 +118,7 @@ func (s *Service) GetCoreSecurityGroups(scope *scope.MachineScope) ([]string, er
 
 func generateInstanceName(prefix string) string {
 	const (
-		chars     = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+		chars     = "abcdefghijklmnopqrstuvwxyz0123456789"
 		suffixLen = 8
 	)
 
