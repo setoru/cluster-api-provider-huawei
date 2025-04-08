@@ -9,11 +9,11 @@ import (
 
 // CloudConfig holds the configuration for the cloud provider.
 type CloudConfig struct {
-	Region    string
-	AccessKey string
-	SecretKey string
-	VPCID     string
-	SubnetID  string
+	Region          string
+	AccessKey       string
+	SecretKey       string
+	VPCID           string
+	NeutronSubnetID string
 }
 
 // CloudInitConfig represents the structure of a cloud-init configuration.
@@ -31,7 +31,7 @@ type WriteFile struct {
 }
 
 func (c *CloudConfig) genCloudProviderSecretTask() (writeFile *WriteFile, runCmd []string, err error) {
-	contentTemplate := "[Global]\n  region={{.Region}}\n  access-key={{.AccessKey}}\n  secret-key={{.SecretKey}}\n\n[Vpc]\n  id={{.VPCID}}\n  subnet-id={{.SubnetID}}\n"
+	contentTemplate := "[Global]\n  region={{.Region}}\n  access-key={{.AccessKey}}\n  secret-key={{.SecretKey}}\n\n[Vpc]\n  id={{.VPCID}}\n  subnet-id={{.NeutronSubnetID}}\n"
 
 	var contentBuffer bytes.Buffer
 	tmpl, err := template.New("content").Parse(contentTemplate)

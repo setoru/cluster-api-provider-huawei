@@ -36,7 +36,7 @@ import (
 	"github.com/HuaweiCloudDeveloper/cluster-api-provider-huawei/pkg/scope"
 )
 
-func (s *Service) findSubnet(scope *scope.MachineScope) (string, error) {
+func (s *Service) findSubnet(scope *scope.MachineScope) (string, string, error) {
 	// Check Machine.Spec.FailureDomain first
 	// as it's used by KubeadmControlPlane to spread machines across failure domains.
 	failureDomain := scope.Machine.Spec.FailureDomain
@@ -51,7 +51,7 @@ func (s *Service) findSubnet(scope *scope.MachineScope) (string, error) {
 
 		subnet, err := s.netService.FindSubnet(*scope.HCMachine.Spec.Subnet.ID)
 		if err != nil {
-			return "", errors.Wrapf(err, "failed to find subnet %s", *scope.HCMachine.Spec.Subnet.ID)
+			return "", "", errors.Wrapf(err, "failed to find subnet %s", *scope.HCMachine.Spec.Subnet.ID)
 		}
 
 		var errMessage string
@@ -79,17 +79,17 @@ func (s *Service) findSubnet(scope *scope.MachineScope) (string, error) {
 		if len(filtered) == 0 {
 			errMessage = fmt.Sprintf("failed to run machine %q, subnet %q not found",
 				scope.Name(), *scope.HCMachine.Spec.Subnet.ID) + errMessage
-			return "", errors.New(errMessage)
+			return "", "", errors.New(errMessage)
 		}
-		return filtered[0].Id, nil
+		return filtered[0].Id, filtered[0].NeutronSubnetId, nil
 
 	default:
 		sns := s.scope.Subnets().FilterPrivate()
 		if len(sns) == 0 {
 			errMessage := fmt.Sprintf("failed to run machine %q, no subnets available", scope.Name())
-			return "", errors.New(errMessage)
+			return "", "", errors.New(errMessage)
 		}
-		return sns[0].GetResourceID(), nil
+		return sns[0].GetResourceID(), sns[0].GetNeutronSubnetID(), nil
 	}
 }
 
@@ -153,7 +153,7 @@ func (s *Service) CreateInstance(scope *scope.MachineScope, userData []byte,
 		input.ImageID = *scope.HCMachine.Spec.ImageRef
 	}
 
-	subnetID, err := s.findSubnet(scope)
+	subnetID, neutronSubnetID, err := s.findSubnet(scope)
 	if err != nil {
 		return nil, err
 	}
@@ -171,11 +171,11 @@ func (s *Service) CreateInstance(scope *scope.MachineScope, userData []byte,
 
 	if scope.IsControlPlane() {
 		cloudConf := &CloudConfig{
-			Region:    s.scope.Region(),
-			AccessKey: scope.Credentials.AK,
-			SecretKey: scope.Credentials.SK,
-			VPCID:     s.scope.VPC().Id,
-			SubnetID:  subnetID,
+			Region:          s.scope.Region(),
+			AccessKey:       scope.Credentials.AK,
+			SecretKey:       scope.Credentials.SK,
+			VPCID:           s.scope.VPC().Id,
+			NeutronSubnetID: neutronSubnetID,
 		}
 		userData, err = cloudConf.appendCloudConfig(userData)
 		if err != nil {

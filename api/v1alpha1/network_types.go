@@ -99,6 +99,11 @@ func (s *SubnetSpec) GetResourceID() string {
 	return s.Id
 }
 
+// GetNeutronSubnetID returns IPv4 subnet ID .
+func (s *SubnetSpec) GetNeutronSubnetID() string {
+	return s.NeutronSubnetId
+}
+
 // Subnets is a slice of Subnet.
 // +listType=map
 // +listMapKey=id
