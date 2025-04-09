@@ -127,6 +127,15 @@ func (s *Service) getPool(poolId string) (*elbmodel.Pool, error) {
 	return response.Pool, nil
 }
 
+func (s *Service) listMembers(poolId string) (*[]elbmodel.Member, error) {
+	req := &elbmodel.ListMembersRequest{PoolId: poolId}
+	response, err := s.elbClient.ListMembers(req)
+	if err != nil {
+		return nil, err
+	}
+	return response.Members, nil
+}
+
 // ReconcileLoadbalancers reconciles the load balancers for the given cluster.
 func (s *Service) ReconcileLoadbalancers() error {
 	klog.Info("Reconciling load balancers")
@@ -393,7 +402,7 @@ func (s *Service) CreateMember(pools []infrav1alpha1.PoolRef, instance *infrav1a
 		}
 		sdkPool, err := s.getPool(pool.Id)
 		if err != nil {
-			return err
+			return errors.Wrapf(err, "failed to get pool")
 		}
 
 		listeners := sdkPool.Listeners
@@ -403,10 +412,14 @@ func (s *Service) CreateMember(pools []infrav1alpha1.PoolRef, instance *infrav1a
 			}
 			sdkListener, err := s.getListener(listener.Id)
 			if err != nil {
-				return err
+				return errors.Wrapf(err, "failed to get listener")
 			}
 
-			createMembersRequest := &elbmodel.BatchCreateMembersRequest{Body: &elbmodel.BatchCreateMembersRequestBody{Members: make([]elbmodel.BatchCreateMembersOption, 0)}}
+			createMembersRequest := &elbmodel.BatchCreateMembersRequest{
+				Body: &elbmodel.BatchCreateMembersRequestBody{
+					Members: make([]elbmodel.BatchCreateMembersOption, 0),
+				},
+			}
 			for _, addr := range instance.Addresses {
 				memberExists, err := s.memberExists(sdkPool, addr.Address, sdkListener.ProtocolPort, instance.SubnetID)
 				if err != nil {
@@ -414,7 +427,11 @@ func (s *Service) CreateMember(pools []infrav1alpha1.PoolRef, instance *infrav1a
 				}
 				if !memberExists && addr.Type == clusterv1.MachineInternalIP {
 					createMembersRequest.PoolId = sdkPool.Id
-					createMember := elbmodel.BatchCreateMembersOption{Address: addr.Address, ProtocolPort: sdkListener.ProtocolPort, SubnetCidrId: &s.scope.Subnets()[0].NeutronSubnetId}
+					createMember := elbmodel.BatchCreateMembersOption{
+						Address:      addr.Address,
+						ProtocolPort: sdkListener.ProtocolPort,
+						SubnetCidrId: &s.scope.Subnets()[0].NeutronSubnetId,
+					}
 					createMembersRequest.Body.Members = append(createMembersRequest.Body.Members, createMember)
 				}
 			}
@@ -424,7 +441,7 @@ func (s *Service) CreateMember(pools []infrav1alpha1.PoolRef, instance *infrav1a
 			}
 			_, err = s.elbClient.BatchCreateMembers(createMembersRequest)
 			if err != nil {
-				return err
+				return errors.Wrapf(err, "failed to create members")
 			}
 		}
 	}
@@ -436,23 +453,21 @@ func (s *Service) DeleteMember(pools []infrav1alpha1.PoolRef, instance *infrav1a
 		if pool.Id == "" {
 			continue
 		}
-		sdkPool, err := s.getPool(pool.Id)
+		members, err := s.listMembers(pool.Id)
 		if err != nil {
-			return err
+			return errors.Wrapf(err, "failed to get members")
 		}
-
-		members := sdkPool.Members
-		for _, member := range members {
-			if member.Id == "" {
+		for _, member := range *members {
+			if *member.InstanceId != instance.ID {
 				continue
 			}
-			deleteMembersRequest := &elbmodel.BatchDeleteMembersRequest{Body: &elbmodel.BatchDeleteMembersRequestBody{Members: make([]elbmodel.BatchDeleteMembersOption, 0)}}
-			deleteMembersRequest.PoolId = sdkPool.Id
-			deleteMember := elbmodel.BatchDeleteMembersOption{Id: &member.Id}
-			deleteMembersRequest.Body.Members = append(deleteMembersRequest.Body.Members, deleteMember)
-			_, err = s.elbClient.BatchDeleteMembers(deleteMembersRequest)
+			deleteMemberRequest := &elbmodel.DeleteMemberRequest{
+				PoolId:   pool.Id,
+				MemberId: member.Id,
+			}
+			_, err = s.elbClient.DeleteMember(deleteMemberRequest)
 			if err != nil {
-				return err
+				return errors.Wrapf(err, "failed to delete member")
 			}
 		}
 	}
