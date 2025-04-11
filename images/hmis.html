@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Testing - Kubernetes Cluster API Provider Huawei</title>
+        <title>Published HMIs - Kubernetes Cluster API Provider Huawei</title>
         
         
 
@@ -95,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item "><a href="../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item "><a href="../user-guide/index.html"><strong aria-hidden="true">2.</strong> User Guide</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../getting-started.html"><strong aria-hidden="true">2.1.</strong> Getting Started</a></li><li class="chapter-item "><a href="../user-guide/installation.html"><strong aria-hidden="true">2.2.</strong> Installation</a></li></ol></li><li class="chapter-item "><a href="../images/index.html"><strong aria-hidden="true">3.</strong> HMIs</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../images/hmis.html"><strong aria-hidden="true">3.1.</strong> Published HMIs</a></li></ol></li><li class="chapter-item expanded "><a href="../dev-guide/index.html"><strong aria-hidden="true">4.</strong> Development Guide</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../dev-guide/tilt.html"><strong aria-hidden="true">4.1.</strong> Developing CAPHW with Tilt</a></li><li class="chapter-item "><a href="../dev-guide/setup.html"><strong aria-hidden="true">4.2.</strong> Development Setup</a></li><li class="chapter-item expanded "><a href="../dev-guide/testing.html" class="active"><strong aria-hidden="true">4.3.</strong> Testing</a></li><li class="chapter-item "><a href="../dev-guide/contributing.html"><strong aria-hidden="true">4.4.</strong> Contributing</a></li></ol></li><li class="chapter-item "><a href="../architecture/index.html"><strong aria-hidden="true">5.</strong> Architecture</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../architecture/index.html"><strong aria-hidden="true">5.1.</strong> Architecture Design Records</a></li></ol></li><li class="chapter-item "><a href="../reference/index.html"><strong aria-hidden="true">6.</strong> Reference</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../reference/cli.html"><strong aria-hidden="true">6.1.</strong> Command Line Tools</a></li></ol></li><li class="chapter-item "><a href="../roadmap.html"><strong aria-hidden="true">7.</strong> Roadmap</a></li></ol>
+                <ol class="chapter"><li class="chapter-item "><a href="../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item "><a href="../user-guide/index.html"><strong aria-hidden="true">2.</strong> User Guide</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../getting-started.html"><strong aria-hidden="true">2.1.</strong> Getting Started</a></li><li class="chapter-item "><a href="../user-guide/installation.html"><strong aria-hidden="true">2.2.</strong> Installation</a></li></ol></li><li class="chapter-item expanded "><a href="../images/index.html"><strong aria-hidden="true">3.</strong> HMIs</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../images/hmis.html" class="active"><strong aria-hidden="true">3.1.</strong> Published HMIs</a></li></ol></li><li class="chapter-item "><a href="../dev-guide/index.html"><strong aria-hidden="true">4.</strong> Development Guide</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../dev-guide/tilt.html"><strong aria-hidden="true">4.1.</strong> Developing CAPHW with Tilt</a></li><li class="chapter-item "><a href="../dev-guide/setup.html"><strong aria-hidden="true">4.2.</strong> Development Setup</a></li><li class="chapter-item "><a href="../dev-guide/testing.html"><strong aria-hidden="true">4.3.</strong> Testing</a></li><li class="chapter-item "><a href="../dev-guide/contributing.html"><strong aria-hidden="true">4.4.</strong> Contributing</a></li></ol></li><li class="chapter-item "><a href="../architecture/index.html"><strong aria-hidden="true">5.</strong> Architecture</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../architecture/index.html"><strong aria-hidden="true">5.1.</strong> Architecture Design Records</a></li></ol></li><li class="chapter-item "><a href="../reference/index.html"><strong aria-hidden="true">6.</strong> Reference</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../reference/cli.html"><strong aria-hidden="true">6.1.</strong> Command Line Tools</a></li></ol></li><li class="chapter-item "><a href="../roadmap.html"><strong aria-hidden="true">7.</strong> Roadmap</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -167,20 +167,53 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#testing" id="testing">Testing</a></h1>
+                        <h2><a class="header" href="#pre-built-kubernetes-hmis" id="pre-built-kubernetes-hmis">Pre-built Kubernetes HMIs</a></h2>
+<p>New HMIs are built on a best effort basis when a new Kubernetes version is released for each supported OS distribution
+and then published to supported regions.</p>
+<h3><a class="header" href="#supported-os-distribution" id="supported-os-distribution">Supported Os Distribution</a></h3>
+<ul>
+<li>Ubuntu (ubuntu-22.04)</li>
+</ul>
+<h3><a class="header" href="#supported-images-on-huawei-regions" id="supported-images-on-huawei-regions">Supported Images On Huawei Regions</a></h3>
+<p>supported Ubuntu-22.04 with Kubernetes v1.32.0:</p>
+<table><thead><tr><th><strong>Regions</strong></th><th><strong>Image ID</strong></th></tr></thead><tbody>
+<tr><td>af-north-1</td><td>8fb791b0-9570-4f7c-b036-cc4bbc2853f0</td></tr>
+<tr><td>af-south-1</td><td>73545729-a2be-474f-adb0-e00c0ec2a1e5</td></tr>
+<tr><td>ap-southeast-1</td><td>4e98ff86-1c31-4ede-997c-44c39e618fd3</td></tr>
+<tr><td>ap-southeast-2</td><td>12896087-f3b9-40b3-9ffd-f68484d477b9</td></tr>
+<tr><td>ap-southeast-3</td><td>af5d578d-6e8e-44bf-9bc3-895c2ff37449</td></tr>
+<tr><td>ap-southeast-4</td><td>939cdd00-19a8-4add-a9c5-615578f48ee2</td></tr>
+<tr><td>ap-southeast-5</td><td>1c290290-ed5d-4b4a-ae74-0aeb27e13bf0</td></tr>
+<tr><td>cn-east-3</td><td>30546bb8-2366-4468-9fdd-0293f56c405a</td></tr>
+<tr><td>cn-north-1</td><td>67843a95-92f2-450a-a767-b9b9fd1a772e</td></tr>
+<tr><td>cn-north-2</td><td>a361110c-d91d-404d-89d2-b3e0b97b42a9</td></tr>
+<tr><td>cn-north-4</td><td>6b201604-c4a7-4abe-b6dc-cb074f744804</td></tr>
+<tr><td>cn-north-9</td><td>f6f47e80-1aa3-4081-ae81-0600a7f45f31</td></tr>
+<tr><td>cn-north-11</td><td>7e39ea5c-4f69-43c7-8009-d69273312d0c</td></tr>
+<tr><td>cn-south-1</td><td>9dbc85e2-eaa8-4b38-b52d-8b67e1f45127</td></tr>
+<tr><td>cn-south-2</td><td>829ee143-8c3f-4b52-996d-f0a99dbb10ba</td></tr>
+<tr><td>cn-south-4</td><td>e2263275-0045-4290-853d-c2c83b33d480</td></tr>
+<tr><td>cn-southwest-2</td><td>3b95a02e-3335-4388-8d12-a69afe60a2e6</td></tr>
+<tr><td>la-south-2</td><td>dbc9f49a-2c1c-4a6b-abd9-0714114007bf</td></tr>
+<tr><td>la-north-2</td><td>8fb791b0-9570-4f7c-b036-cc4bbc2853f0</td></tr>
+<tr><td>me-east-1</td><td>fb79afff-7d52-4aa9-bbe7-eee2b6534828</td></tr>
+<tr><td>na-mexico-1</td><td>31bbf5ad-e8c6-4fdc-92b7-b0d8a07654c5</td></tr>
+<tr><td>sa-brazil-1</td><td>76c87bd3-a001-4311-ac7b-35e9fbf4353c</td></tr>
+<tr><td>tr-west-1</td><td>aec0fce2-d059-4e56-8532-d1fb0d0f5f6f</td></tr>
+</tbody></table>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="../dev-guide/setup.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../images/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
 
                         
-                            <a rel="next" href="../dev-guide/contributing.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../dev-guide/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -192,13 +225,13 @@
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a rel="prev" href="../dev-guide/setup.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../images/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a rel="next" href="../dev-guide/contributing.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../dev-guide/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 
