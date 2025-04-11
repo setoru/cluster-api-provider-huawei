@@ -4,6 +4,8 @@
 - [User Guide](user-guide/index.md)
   - [Getting Started](getting-started.md)
   - [Installation](user-guide/installation.md)
+- [HMIs](images/index.md)
+  - [Published HMIs](images/hmis.md)
 - [Development Guide](dev-guide/index.md)
   - [Developing CAPHW with Tilt](dev-guide/tilt.md)
   - [Development Setup](dev-guide/setup.md)
