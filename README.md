@@ -18,4 +18,4 @@ to deploy and manage Kubernetes clusters on Huawei Cloud.
 
 ## Kubernetes versions with published HMIs
 
-See [hmis](docs/book/src/images/hmis.md) for the list of most recently published HMIs.
+See [hmis](https://huaweiclouddeveloper.github.io/cluster-api-provider-huawei/images/hmis.html) for the list of most recently published HMIs.
