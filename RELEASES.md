@@ -32,3 +32,4 @@
 | CAPHW Version | kubernetes Version   | huawei cloud provider Version |
 |---------------|----------------------|-------------------------------|
 | v0.0.1        | v1.32.0+             | -                             |
+| v0.1.0        | v1.32.0+             | -                             |
