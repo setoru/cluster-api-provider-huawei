@@ -296,13 +296,13 @@ for more details (use the “Manifest” tab). Below is an example of how to ins
 <h4><a class="header" href="#install-clusterctl-binary-with-curl-on-linux" id="install-clusterctl-binary-with-curl-on-linux">Install clusterctl binary with curl on Linux</a></h4>
 <p>If you are unsure you can determine your computers architecture by running <code>uname -a</code></p>
 <p>Download for AMD64:</p>
-<pre><code class="language-bash">curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.6/clusterctl-linux-amd64 -o clusterctl
+<pre><code class="language-bash">curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.7/clusterctl-linux-amd64 -o clusterctl
 </code></pre>
 <p>Download for ARM64:</p>
-<pre><code class="language-bash">curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.6/clusterctl-linux-arm64 -o clusterctl
+<pre><code class="language-bash">curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.7/clusterctl-linux-arm64 -o clusterctl
 </code></pre>
 <p>Download for PPC64LE:</p>
-<pre><code class="language-bash">curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.6/clusterctl-linux-ppc64le -o clusterctl
+<pre><code class="language-bash">curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.7/clusterctl-linux-ppc64le -o clusterctl
 </code></pre>
 <p>Install clusterctl:</p>
 <pre><code class="language-bash">sudo install -o root -g root -m 0755 clusterctl /usr/local/bin/clusterctl
@@ -315,10 +315,10 @@ for more details (use the “Manifest” tab). Below is an example of how to ins
 <h4><a class="header" href="#install-clusterctl-binary-with-curl-on-macos" id="install-clusterctl-binary-with-curl-on-macos">Install clusterctl binary with curl on macOS</a></h4>
 <p>If you are unsure you can determine your computers architecture by running <code>uname -a</code></p>
 <p>Download for AMD64:</p>
-<pre><code class="language-bash">curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.6/clusterctl-darwin-amd64 -o clusterctl
+<pre><code class="language-bash">curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.7/clusterctl-darwin-amd64 -o clusterctl
 </code></pre>
 <p>Download for M1 CPU (”Apple Silicon”) / ARM64:</p>
-<pre><code class="language-bash">curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.6/clusterctl-darwin-arm64 -o clusterctl
+<pre><code class="language-bash">curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.7/clusterctl-darwin-arm64 -o clusterctl
 </code></pre>
 <p>Make the clusterctl binary executable.</p>
 <pre><code class="language-bash">chmod +x ./clusterctl
@@ -343,7 +343,7 @@ for more details (use the “Manifest” tab). Below is an example of how to ins
 <h4><a class="header" href="#install-clusterctl-binary-with-curl-on-windows-using-powershell" id="install-clusterctl-binary-with-curl-on-windows-using-powershell">Install clusterctl binary with curl on Windows using PowerShell</a></h4>
 <p>Go to the working directory where you want clusterctl downloaded.</p>
 <p>Download the latest release; on Windows, type:</p>
-<pre><code class="language-powershell">curl.exe -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.6/clusterctl-windows-amd64.exe -o clusterctl.exe
+<pre><code class="language-powershell">curl.exe -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.7/clusterctl-windows-amd64.exe -o clusterctl.exe
 </code></pre>
 <p>Append or prepend the path of that directory to the <code>PATH</code> environment variable.</p>
 <p>Test to ensure the version you installed is up-to-date:</p>
@@ -601,8 +601,8 @@ clusterctl init --infrastructure gcp
 </section>
 <section id="tab-Huawei" class="tab-panel">
 <pre><code class="language-bash"># Please ensure that the values for `CLOUD_SDK_AK` and `CLOUD_SDK_SK` are base64 encoded.
-export CLOUD_SDK_AK=$( echo $AccessKey | base64 | tr -d '\n' )
-export CLOUD_SDK_SK=$( echo $SecretKey | base64 | tr -d '\n' )
+export CLOUD_SDK_AK=$( echo -n &quot;$AccessKey&quot; | base64 | tr -d '\n' )
+export CLOUD_SDK_SK=$( echo -n &quot;$SecretKey&quot; | base64 | tr -d '\n' )
 
 # Finally, initialize the management cluster
 clusterctl init --infrastructure huawei
@@ -991,7 +991,7 @@ export WORKER_MACHINE_COUNT=2
 </section>
 <section id="tab-Huawei" class="tab-panel">
 <pre><code class="language-bash"># huawei cloud region
-export HC_REGION=&quot;cn-east-1&quot;
+export HC_REGION=&quot;ap-southeast-1&quot;
 # ECS SSH key name
 export HC_SSH_KEY_NAME=&quot;default&quot;
 # kubernetes version
@@ -1001,11 +1001,11 @@ export CONTROL_PLANE_MACHINE_COUNT=&quot;1&quot;
 # number of worker machines
 export WORKER_MACHINE_COUNT=&quot;1&quot;
 # control plane machine type
-export HC_CONTROL_PLANE_MACHINE_TYPE=&quot;x1e.2u.4g&quot;
+export HC_CONTROL_PLANE_MACHINE_TYPE=&quot;x1.2u.4g&quot;
 # worker node machine type
-export HC_NODE_MACHINE_TYPE=&quot;x1e.2u.4g&quot;
+export HC_NODE_MACHINE_TYPE=&quot;x1.2u.4g&quot;
 # ECS image ID
-export ECS_IMAGE_ID=&quot;218ca5t7-bxf3-5dg0-852p-y703c9fe1a52&quot;
+export ECS_IMAGE_ID=&quot;4e98ff86-1c31-4ede-997c-44c39e618fd3&quot;
 </code></pre>
 <p>See the <a href="https://github.com/HuaweiCloudDeveloper/cluster-api-provider-huawei">Huawei Cloud provider</a> for more information.</p>
 </section>
