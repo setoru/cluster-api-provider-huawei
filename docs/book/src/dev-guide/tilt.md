@@ -10,8 +10,8 @@ workflow that offers easy deployments and rapid iterative builds.
 1. [Docker](https://docs.docker.com/install/): v19.03 or newer (on MacOS e.g. via [ObrStack](https://orbstack.dev/))
 2. [kind](https://kind.sigs.k8s.io): v0.25.0 or newer
 3. [Tilt](https://docs.tilt.dev/install.html): v0.30.8 or newer
-4. [kustomize](https://github.com/kubernetes-sigs/kustomize): provided via `make kustomize`
-5. [envsubst](https://github.com/drone/envsubst): provided via `make envsubst`
+4. [kustomize](https://github.com/kubernetes-sigs/kustomize)
+5. [envsubst](https://github.com/drone/envsubst)
 6. [helm](https://github.com/helm/helm): v3.7.1 or newer
 7. Clone the [Cluster API](https://github.com/kubernetes-sigs/cluster-api) repository
    locally
@@ -38,16 +38,16 @@ kustomize_substitutions:
   CLOUD_SDK_AK: "xxxxxxxx"
   CLOUD_SDK_SK: "xxxxxxxx"
 
-  HC_REGION: "cn-north-4"
+  HC_REGION: "ap-southeast-1"
   HC_SSH_KEY_NAME: "default"
-  KUBERNETES_VERSION: "v1.26.15"
+  KUBERNETES_VERSION: "1.32.0"
   CLUSTER_NAME: "hello"
   CONTROL_PLANE_MACHINE_COUNT: "1"
   WORKER_MACHINE_COUNT: "1"
-  HC_CONTROL_PLANE_MACHINE_TYPE: "x1e.2u.4g"
-  HC_NODE_MACHINE_TYPE: "x1e.2u.4g"
+  HC_CONTROL_PLANE_MACHINE_TYPE: "x1.2u.4g"
+  HC_NODE_MACHINE_TYPE: "x1.2u.4g"
 
-  ECS_IMAGE_ID: "a9f5cc27-0d50-4864-a45e-d8eead734a3f"
+  ECS_IMAGE_ID: "4e98ff86-1c31-4ede-997c-44c39e618fd3"
 
 ```
 
