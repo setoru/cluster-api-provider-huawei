@@ -313,13 +313,13 @@ for more details (use the “Manifest” tab). Below is an example of how to ins
 <h4><a class="header" href="#install-clusterctl-binary-with-curl-on-linux" id="install-clusterctl-binary-with-curl-on-linux">Install clusterctl binary with curl on Linux</a></h4>
 <p>If you are unsure you can determine your computers architecture by running <code>uname -a</code></p>
 <p>Download for AMD64:</p>
-<pre><code class="language-bash">curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.7/clusterctl-linux-amd64 -o clusterctl
+<pre><code class="language-bash">curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.8/clusterctl-linux-amd64 -o clusterctl
 </code></pre>
 <p>Download for ARM64:</p>
-<pre><code class="language-bash">curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.7/clusterctl-linux-arm64 -o clusterctl
+<pre><code class="language-bash">curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.8/clusterctl-linux-arm64 -o clusterctl
 </code></pre>
 <p>Download for PPC64LE:</p>
-<pre><code class="language-bash">curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.7/clusterctl-linux-ppc64le -o clusterctl
+<pre><code class="language-bash">curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.8/clusterctl-linux-ppc64le -o clusterctl
 </code></pre>
 <p>Install clusterctl:</p>
 <pre><code class="language-bash">sudo install -o root -g root -m 0755 clusterctl /usr/local/bin/clusterctl
@@ -332,10 +332,10 @@ for more details (use the “Manifest” tab). Below is an example of how to ins
 <h4><a class="header" href="#install-clusterctl-binary-with-curl-on-macos" id="install-clusterctl-binary-with-curl-on-macos">Install clusterctl binary with curl on macOS</a></h4>
 <p>If you are unsure you can determine your computers architecture by running <code>uname -a</code></p>
 <p>Download for AMD64:</p>
-<pre><code class="language-bash">curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.7/clusterctl-darwin-amd64 -o clusterctl
+<pre><code class="language-bash">curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.8/clusterctl-darwin-amd64 -o clusterctl
 </code></pre>
 <p>Download for M1 CPU (”Apple Silicon”) / ARM64:</p>
-<pre><code class="language-bash">curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.7/clusterctl-darwin-arm64 -o clusterctl
+<pre><code class="language-bash">curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.8/clusterctl-darwin-arm64 -o clusterctl
 </code></pre>
 <p>Make the clusterctl binary executable.</p>
 <pre><code class="language-bash">chmod +x ./clusterctl
@@ -360,7 +360,7 @@ for more details (use the “Manifest” tab). Below is an example of how to ins
 <h4><a class="header" href="#install-clusterctl-binary-with-curl-on-windows-using-powershell" id="install-clusterctl-binary-with-curl-on-windows-using-powershell">Install clusterctl binary with curl on Windows using PowerShell</a></h4>
 <p>Go to the working directory where you want clusterctl downloaded.</p>
 <p>Download the latest release; on Windows, type:</p>
-<pre><code class="language-powershell">curl.exe -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.7/clusterctl-windows-amd64.exe -o clusterctl.exe
+<pre><code class="language-powershell">curl.exe -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.9.8/clusterctl-windows-amd64.exe -o clusterctl.exe
 </code></pre>
 <p>Append or prepend the path of that directory to the <code>PATH</code> environment variable.</p>
 <p>Test to ensure the version you installed is up-to-date:</p>
@@ -1657,8 +1657,8 @@ workflow that offers easy deployments and rapid iterative builds.</p>
 <li><a href="https://docs.docker.com/install/">Docker</a>: v19.03 or newer (on MacOS e.g. via <a href="https://orbstack.dev/">ObrStack</a>)</li>
 <li><a href="https://kind.sigs.k8s.io">kind</a>: v0.25.0 or newer</li>
 <li><a href="https://docs.tilt.dev/install.html">Tilt</a>: v0.30.8 or newer</li>
-<li><a href="https://github.com/kubernetes-sigs/kustomize">kustomize</a>: provided via <code>make kustomize</code></li>
-<li><a href="https://github.com/drone/envsubst">envsubst</a>: provided via <code>make envsubst</code></li>
+<li><a href="https://github.com/kubernetes-sigs/kustomize">kustomize</a></li>
+<li><a href="https://github.com/drone/envsubst">envsubst</a></li>
 <li><a href="https://github.com/helm/helm">helm</a>: v3.7.1 or newer</li>
 <li>Clone the <a href="https://github.com/kubernetes-sigs/cluster-api">Cluster API</a> repository
 locally</li>
@@ -1681,16 +1681,16 @@ kustomize_substitutions:
   CLOUD_SDK_AK: &quot;xxxxxxxx&quot;
   CLOUD_SDK_SK: &quot;xxxxxxxx&quot;
 
-  HC_REGION: &quot;cn-north-4&quot;
+  HC_REGION: &quot;ap-southeast-1&quot;
   HC_SSH_KEY_NAME: &quot;default&quot;
-  KUBERNETES_VERSION: &quot;v1.26.15&quot;
+  KUBERNETES_VERSION: &quot;1.32.0&quot;
   CLUSTER_NAME: &quot;hello&quot;
   CONTROL_PLANE_MACHINE_COUNT: &quot;1&quot;
   WORKER_MACHINE_COUNT: &quot;1&quot;
-  HC_CONTROL_PLANE_MACHINE_TYPE: &quot;x1e.2u.4g&quot;
-  HC_NODE_MACHINE_TYPE: &quot;x1e.2u.4g&quot;
+  HC_CONTROL_PLANE_MACHINE_TYPE: &quot;x1.2u.4g&quot;
+  HC_NODE_MACHINE_TYPE: &quot;x1.2u.4g&quot;
 
-  ECS_IMAGE_ID: &quot;a9f5cc27-0d50-4864-a45e-d8eead734a3f&quot;
+  ECS_IMAGE_ID: &quot;4e98ff86-1c31-4ede-997c-44c39e618fd3&quot;
 
 </code></pre>
 <p><strong>Note:</strong> Please ensure that the values for <code>CLOUD_SDK_AK</code> and <code>CLOUD_SDK_SK</code> are base64 encoded.</p>
